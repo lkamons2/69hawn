@@ -14,7 +14,7 @@ from snowbound import create_app, db
 from snowbound.models import Audit
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-XLSX_PATH = os.path.join(PROJECT_ROOT, "GAS-code", "SnowBoundersCalendarApp.xlsx")
+XLSX_PATH = os.path.join(PROJECT_ROOT, "SnowBoundersCalendarApp.xlsx")
 
 # Sheet columns (0-indexed):
 # 0=Timestamp, 1=yourEmailAddress, 2=tradeType, 3=owner1, 4=owner1Week,

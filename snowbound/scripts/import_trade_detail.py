@@ -13,7 +13,7 @@ from snowbound import create_app, db
 from snowbound.models import Owner, TradeDetail
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-XLSX_PATH = os.path.join(PROJECT_ROOT, "GAS-code", "SnowBoundersCalendarApp.xlsx")
+XLSX_PATH = os.path.join(PROJECT_ROOT, "SnowBoundersCalendarApp.xlsx")
 
 # Sheet columns (0-indexed):
 # 0=YEAR, 1=NAME, 2=Week, 3=Traded, 4=Who Has Condo,
