@@ -23,6 +23,7 @@ class OwnerEmail(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey("owners.id"), nullable=False)
     email = db.Column(db.Text, nullable=False)
     is_primary = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
 
 class Calendar(db.Model):

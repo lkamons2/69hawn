@@ -27,7 +27,7 @@ OWNERS = [
         "Larry cell 412-537-2486\nMaureen cell 412-965-2020",
         "Larry & Maureen Kamons\nlarry@kamons.com\nmaureen@kamons.com\nLarry cell 412-537-2486\nMaureen cell 412-965-2020",
         True,  # is_admin
-        [("larry@kamons.com", True), ("maureen@kamons.com", False)],
+        [("larry@kamons.com", True, True), ("maureen@kamons.com", False, False)],
     ),
     (
         "Loyle",
@@ -117,11 +117,14 @@ def run():
             db.session.add(owner)
             db.session.flush()  # get owner.id
 
-            for email, is_primary in emails:
+            for email_tuple in emails:
+                email, is_primary = email_tuple[0], email_tuple[1]
+                is_admin_email = email_tuple[2] if len(email_tuple) > 2 else False
                 db.session.add(OwnerEmail(
                     owner_id=owner.id,
                     email=email.lower().strip(),
                     is_primary=is_primary,
+                    is_admin=is_admin_email,
                 ))
 
         for key, value, note in SITE_CONFIG:
