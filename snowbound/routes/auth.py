@@ -32,24 +32,17 @@ def _send_magic_link_email(to_email, magic_url):
         f"If you did not request this link, you can ignore this email."
     )
 
-    override = current_app.config.get("TEST_EMAIL_OVERRIDE", "")
-    actual_recipient = override if override else to_email
-
-    subject = "Snowbound LLC Calendar — Login Link"
-    if override:
-        subject = f"[TEST — intended for {to_email}] {subject}"
-
     msg = MIMEText(body)
-    msg["Subject"] = subject
+    msg["Subject"] = "Snowbound LLC Calendar — Login Link"
     msg["From"] = from_addr
-    msg["To"] = actual_recipient
+    msg["To"] = to_email
 
     try:
         with smtplib.SMTP(host, port) as smtp:
             smtp.ehlo()
             smtp.starttls()
             smtp.login(user, password)
-            smtp.sendmail(from_addr, [actual_recipient], msg.as_string())
+            smtp.sendmail(from_addr, [to_email], msg.as_string())
         flash("Login link sent — check your email.", "info")
     except Exception as e:
         current_app.logger.error(f"SMTP error: {e}")

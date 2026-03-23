@@ -3,6 +3,7 @@ from collections import defaultdict
 from flask import Blueprint, render_template, redirect, url_for, request
 from .. import db
 from ..models import Calendar, TradeDetail, Owner, SiteConfig
+from ..decorators import login_required
 
 bp = Blueprint("calendar", __name__)
 
@@ -13,26 +14,31 @@ def _week_end(week_start_str):
 
 
 @bp.route("/")
+@login_required
 def index():
     return redirect(url_for("calendar.year_view", year=date.today().year))
 
 
 @bp.route("/calendar")
+@login_required
 def current():
     return redirect(url_for("calendar.year_view", year=date.today().year))
 
 
 @bp.route("/calendar/prev")
+@login_required
 def prev():
     return redirect(url_for("calendar.year_view", year=date.today().year - 1))
 
 
 @bp.route("/calendar/next")
+@login_required
 def next_year():
     return redirect(url_for("calendar.year_view", year=date.today().year + 1))
 
 
 @bp.route("/calendar/<int:year>")
+@login_required
 def year_view(year):
     configs = {sc.key: sc for sc in SiteConfig.query.all()}
     owners = Owner.query.filter_by(is_active=True).all()
@@ -89,6 +95,7 @@ def year_view(year):
 
 
 @bp.route("/lookup")
+@login_required
 def lookup():
     owners = Owner.query.filter_by(is_active=True).order_by(Owner.short_name).all()
     owner_id = request.args.get("owner_id", type=int)
