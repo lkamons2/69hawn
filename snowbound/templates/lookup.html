@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Owner Lookup — Snowbound LLC{% endblock %}
+
+{% block content %}
+<h1>Owner Lookup</h1>
+
+<form method="get" action="{{ url_for('calendar.lookup') }}" class="lookup-form">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="owner_id">Owner</label>
+      <select id="owner_id" name="owner_id">
+        <option value="0" {% if selected_owner_id == 0 %}selected{% endif %}>All Owners</option>
+        {% for o in owners %}
+          <option value="{{ o.id }}" {% if o.id == selected_owner_id %}selected{% endif %}>
+            {{ o.short_name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="year">Year</label>
+      <select id="year" name="year">
+        {% for y in year_range %}
+          <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group" style="align-self:flex-end;">
+      <button type="submit">Look Up</button>
+    </div>
+  </div>
+</form>
+
+{% if selected_owner_id is not none %}
+  {% if weeks %}
+  <table style="margin-top:20px;">
+    <thead>
+      <tr>
+        <th>Week Start</th>
+        <th>Week End</th>
+        <th>Original Owner</th>
+        <th>Current Holder</th>
+        <th>Traded?</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in weeks %}
+      <tr {% if w.is_traded %}class="traded-row"{% endif %}>
+        <td>{{ w.week_start }}</td>
+        <td>{{ w.week_end }}</td>
+        <td>{{ w.original_owner }}</td>
+        <td>{{ w.current_owner }}</td>
+        <td>{{ 'Yes' if w.is_traded else '' }}</td>
+        <td>{{ w.comment }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="margin-top:16px;color:#666;">No weeks found for this selection.</p>
+  {% endif %}
+{% endif %}
+{% endblock %}

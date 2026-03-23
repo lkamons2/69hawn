@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Trade / Comment — Snowbound LLC{% endblock %}
+
+{% block content %}
+<h1>Trade / Comment Form</h1>
+
+<div class="form-section">
+  <form id="tradeForm" method="post" action="{{ url_for('form.form') }}">
+    <div class="form-group">
+      <label for="trade_type">Trade Type *</label>
+      <select id="trade_type" name="trade_type" required onchange="handleTradeTypeChange()">
+        <option value="">— Select —</option>
+        <option value="Trade Week">Trade Week</option>
+        <option value="Give Away">Give Away</option>
+        <option value="Not Using">Not Using</option>
+        <option value="Comment">Comment</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="owner1_id">Owner 1 *</label>
+      <select id="owner1_id" name="owner1_id" required onchange="loadWeeks('owner1_id','week1')">
+        <option value="">— Select Owner —</option>
+        {% for o in owners %}
+          <option value="{{ o.id }}">{{ o.short_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="week1">Owner 1 Week *</label>
+      <select id="week1" name="week1" required>
+        <option value="">— Select Week —</option>
+      </select>
+    </div>
+
+    <div id="owner2Fields" style="display:none;">
+      <div class="form-group">
+        <label for="owner2_id">Owner 2 *</label>
+        <select id="owner2_id" name="owner2_id" onchange="loadWeeks('owner2_id','week2')">
+          <option value="">— Select Owner —</option>
+          {% for o in owners %}
+            <option value="{{ o.id }}">{{ o.short_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="week2">Owner 2 Week *</label>
+        <select id="week2" name="week2">
+          <option value="">— Select Week —</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="comment">Comment (optional, max 40 chars)</label>
+      <input type="text" id="comment" name="comment" maxlength="40">
+    </div>
+
+    <button type="submit" id="submitBtn">Submit</button>
+    <a href="#" onclick="toggleHelp(event)" style="margin-left:16px;color:#1a4d7a;">Help</a>
+  </form>
+</div>
+
+<div id="helpBox" style="display:none;margin-top:16px;background:#f0f4f8;padding:16px;border-radius:4px;">
+  <strong>Trade Type Guide</strong>
+  <table style="margin-top:8px;">
+    <tr><th>Type</th><th>Description</th></tr>
+    <tr><td>Trade Week</td><td>Swap weeks between two owners. Both owners and weeks required.</td></tr>
+    <tr><td>Give Away</td><td>Mark your week as available. Add a comment to explain.</td></tr>
+    <tr><td>Not Using</td><td>Note that you will not be using your week.</td></tr>
+    <tr><td>Comment</td><td>Add a note to a week without changing ownership.</td></tr>
+  </table>
+</div>
+
+<script>
+const weeksData = {{ weeks_json | safe }};
+
+function handleTradeTypeChange() {
+  const type = document.getElementById('trade_type').value;
+  const f2 = document.getElementById('owner2Fields');
+  const sel2 = document.getElementById('owner2_id');
+  const wk2 = document.getElementById('week2');
+  if (type === 'Trade Week') {
+    f2.style.display = '';
+    sel2.required = true;
+    wk2.required = true;
+  } else {
+    f2.style.display = 'none';
+    sel2.required = false;
+    wk2.required = false;
+    sel2.value = '';
+    wk2.innerHTML = '<option value="">— Select Week —</option>';
+  }
+}
+
+function loadWeeks(ownerSelectId, weekSelectId) {
+  const ownerId = document.getElementById(ownerSelectId).value;
+  const weekSel = document.getElementById(weekSelectId);
+  weekSel.innerHTML = '<option value="">— Select Week —</option>';
+  if (!ownerId) return;
+  const weeks = weeksData[ownerId] || [];
+  weeks.forEach(w => {
+    const opt = document.createElement('option');
+    opt.value = w;
+    opt.textContent = w;
+    weekSel.appendChild(opt);
+  });
+}
+
+function toggleHelp(e) {
+  e.preventDefault();
+  const b = document.getElementById('helpBox');
+  b.style.display = b.style.display === 'none' ? '' : 'none';
+}
+
+document.getElementById('tradeForm').addEventListener('submit', function() {
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').textContent = 'Submitting…';
+});
+</script>
+{% endblock %}

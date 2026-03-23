@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Compose Email — Snowbound LLC{% endblock %}
+
+{% block content %}
+<h1>Compose Group Email</h1>
+<p>Send an email to all Snowbound LLC owners. Choose your preferred email client:</p>
+
+<div class="form-section">
+  <div class="form-group">
+    <label>
+      <input type="checkbox" id="useBcc" checked>
+      Put recipients in BCC (recommended — hides addresses from others)
+    </label>
+  </div>
+
+  <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;">
+    <button onclick="openGmail()">Gmail (web)</button>
+    <button onclick="openOutlookWeb()">Outlook (web)</button>
+    <button onclick="openMailto()">Default Mail App</button>
+    <button onclick="copyEmails()" style="background:#555;">Copy All Addresses</button>
+  </div>
+
+  <p id="copyFeedback" style="color:green;margin-top:8px;display:none;">Copied to clipboard!</p>
+</div>
+
+<details style="margin-top:20px;">
+  <summary style="cursor:pointer;color:#1a4d7a;">Show all email addresses ({{ all_emails|length }})</summary>
+  <div style="margin-top:8px;font-size:0.9rem;color:#444;">
+    {% for e in all_emails %}{{ e }}{% if not loop.last %}, {% endif %}{% endfor %}
+  </div>
+</details>
+
+<script>
+const emailsCsv = {{ all_emails | tojson | safe }}.join(',');
+const emailsSemi = {{ all_emails | tojson | safe }}.join(';');
+
+const gmailBase = {{ gmail_url | tojson | safe }};
+const outlookBase = {{ outlook_web_url | tojson | safe }};
+const mailtoBase = {{ mailto_url | tojson | safe }};
+
+function useBcc() {
+  return document.getElementById('useBcc').checked;
+}
+
+function openGmail() {
+  window.open(gmailBase, '_blank');
+}
+
+function openOutlookWeb() {
+  window.open(outlookBase, '_blank');
+}
+
+function openMailto() {
+  window.location.href = mailtoBase;
+}
+
+async function copyEmails() {
+  const text = emailsSemi;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    const fb = document.getElementById('copyFeedback');
+    fb.style.display = '';
+    setTimeout(() => { fb.style.display = 'none'; }, 3000);
+  } catch(e) {
+    alert('Copy failed: ' + e.message);
+  }
+}
+</script>
+{% endblock %}

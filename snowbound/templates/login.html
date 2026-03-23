@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Login — Snowbound LLC{% endblock %}
+{% block content %}
+<h1>Login</h1>
+<form method="post">
+  <label for="email">Email address:</label><br>
+  <input type="email" id="email" name="email" required autofocus><br><br>
+  <button type="submit">Send Magic Link</button>
+</form>
+{% endblock %}

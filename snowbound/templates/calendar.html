@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Snowbound LLC — {{ year }} Calendar{% endblock %}
+
+{% block content %}
+<h1>Snowbound LLC Condo Calendar — {{ year }}</h1>
+
+<div class="year-nav">
+  <a href="{{ url_for('calendar.year_view', year=prev_year) }}">&larr; {{ prev_year }}</a>
+  <select onchange="window.location='/calendar/'+this.value" style="font-size:1rem;padding:4px 8px;">
+    {% for y in year_range %}
+      <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+    {% endfor %}
+  </select>
+  <a href="{{ url_for('calendar.year_view', year=next_year) }}">{{ next_year }} &rarr;</a>
+</div>
+
+<div style="overflow-x:auto;">
+  <table class="cal-grid">
+    <thead>
+      <tr>
+        <th class="cal-info-col">Owner Info</th>
+        <th>WEEK 1</th>
+        <th>WEEK 2</th>
+        <th>WEEK 3</th>
+        <th>WEEK 4</th>
+        <th>WEEK 5</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set garage = configs.get('Garage') %}
+      {% set wifi = configs.get('WiFi') %}
+      {% set lockbox = configs.get('Lock Box') %}
+      {% if garage %}
+      <tr class="site-info-row">
+        <td><strong>Garage: {{ garage.value }}</strong></td>
+        <td colspan="5" class="site-note">{{ garage.note }}</td>
+      </tr>
+      {% endif %}
+      {% if wifi %}
+      <tr class="site-info-row">
+        <td><strong>WiFi: {{ wifi.value }}</strong></td>
+        <td colspan="5" class="site-note">{{ wifi.note }}</td>
+      </tr>
+      {% endif %}
+      {% if lockbox %}
+      <tr class="site-info-row">
+        <td><strong>Lock Box: {{ lockbox.value }}</strong></td>
+        <td colspan="5" class="site-note">{{ lockbox.note }}</td>
+      </tr>
+      {% endif %}
+
+      {% for row in rows %}
+      <tr>
+        <td class="owner-cell">{{ row.owner.display_info | replace('\n', '<br>') | safe if row.owner.display_info else row.owner.short_name }}</td>
+        {% for cell in row.cells %}
+          {% if cell %}
+        <td class="week-cell{% if cell.is_traded %} traded{% endif %}">
+            <div class="week-dates" style="white-space:nowrap;">{{ cell.week_start }} &mdash; {{ cell.week_end }}</div>
+            {% if cell.is_traded %}
+              <div class="trade-info">&#8594; {{ cell.current_owner }}</div>
+            {% endif %}
+            {% if cell.comment %}
+              <div class="week-comment">{{ cell.comment }}</div>
+            {% endif %}
+        </td>
+          {% else %}
+        <td class="week-cell empty"></td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

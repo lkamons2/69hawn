@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Add' if is_add else 'Edit' }} — {{ table_name }} — Admin{% endblock %}
+
+{% block content %}
+<h1>{{ 'Add Row' if is_add else 'Edit Row' }} — {{ table_name }}</h1>
+<a href="{{ url_for('admin.table', name=table_name) }}" style="color:#1a4d7a;">&larr; Back to {{ table_name }}</a>
+
+<div class="form-section" style="margin-top:16px;">
+  {% if is_add %}
+  <form method="post" action="{{ url_for('admin.add_row', name=table_name) }}">
+  {% else %}
+  <form method="post" action="{{ url_for('admin.edit_row', name=table_name, pk_val=pk_val) }}">
+  {% endif %}
+
+    {% for col in columns %}
+      {% if col.pk and not is_add %}
+        {# Show PK as read-only #}
+        <div class="form-group">
+          <label>{{ col.display_name }}</label>
+          <input type="text" value="{{ row_dict.get(col.name, '') }}" disabled style="background:#eee;">
+        </div>
+      {% elif not col.pk %}
+        <div class="form-group">
+          <label for="f_{{ col.name }}">{{ col.display_name }}</label>
+          {% set cur_val = row_dict.get(col.name, '') %}
+
+          {% if col.field_type == 'checkbox' %}
+            <input type="checkbox" id="f_{{ col.name }}" name="{{ col.name }}"
+                   {% if cur_val %}checked{% endif %}>
+
+          {% elif col.field_type == 'textarea' %}
+            <textarea id="f_{{ col.name }}" name="{{ col.name }}" rows="4">{{ cur_val or '' }}</textarea>
+
+          {% elif col.field_type == 'select' and col.lov_options %}
+            <select id="f_{{ col.name }}" name="{{ col.name }}">
+              <option value="">— Select —</option>
+              {% for opt in col.lov_options %}
+                <option value="{{ opt.value }}" {% if opt.value == (cur_val | string) %}selected{% endif %}>
+                  {{ opt.label }}
+                </option>
+              {% endfor %}
+            </select>
+
+          {% elif col.field_type == 'date' %}
+            <input type="text" id="f_{{ col.name }}" name="{{ col.name }}"
+                   value="{{ cur_val or '' }}" placeholder="MM/DD/YYYY">
+
+          {% else %}
+            <input type="text" id="f_{{ col.name }}" name="{{ col.name }}"
+                   value="{{ cur_val or '' }}">
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <div style="margin-top:16px;display:flex;gap:12px;">
+      <button type="submit">{{ 'Add Row' if is_add else 'Save Changes' }}</button>
+      <a href="{{ url_for('admin.table', name=table_name) }}"
+         style="padding:10px 20px;color:#444;text-decoration:none;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

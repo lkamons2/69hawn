@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Snowbound LLC — Data Model</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, serif;
+      background: #f4f6f9;
+      color: #222;
+      padding: 40px 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #1a4d7a;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 30px 40px;
+      max-width: 1400px;
+      margin: 0 auto 40px;
+    }
+    h2 {
+      color: #1a4d7a;
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #d0e4f7;
+      padding-bottom: 8px;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      min-height: 300px;
+    }
+    .diagram-label {
+      font-size: 0.85rem;
+      color: #888;
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+    .diagram-divider {
+      border: none;
+      border-top: 2px dashed #d0e4f7;
+      margin: 30px 0;
+    }
+
+    /* Data dictionary */
+    .dict-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .table-card {
+      border: 1px solid #d0e4f7;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .table-card-header {
+      background: #1a4d7a;
+      color: #fff;
+      padding: 10px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    .table-card table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .table-card th {
+      background: #e8f0f8;
+      color: #1a4d7a;
+      text-align: left;
+      padding: 6px 10px;
+      font-family: sans-serif;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .table-card td {
+      padding: 5px 10px;
+      border-bottom: 1px solid #f0f0f0;
+      font-family: 'Courier New', monospace;
+      vertical-align: top;
+    }
+    .table-card tr:last-child td { border-bottom: none; }
+    .table-card tr:hover td { background: #f7fbff; }
+    .badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.72rem;
+      font-family: sans-serif;
+      font-weight: bold;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .badge-pk  { background: #ffd700; color: #333; }
+    .badge-fk  { background: #4a9eda; color: #fff; }
+    .badge-nn  { background: #e07b3a; color: #fff; }
+    .badge-uq  { background: #6abf69; color: #fff; }
+    .col-name  { color: #1a4d7a; font-weight: bold; }
+    .col-type  { color: #888; }
+    .col-desc  { font-family: sans-serif; color: #555; font-size: 0.78rem; }
+
+    /* FK summary */
+    .fk-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .fk-table th {
+      background: #1a4d7a; color: #fff;
+      padding: 8px 14px; text-align: left;
+    }
+    .fk-table td { padding: 7px 14px; border-bottom: 1px solid #e8e8e8; font-family: 'Courier New', monospace; }
+    .fk-table tr:hover td { background: #f7fbff; }
+    .arrow { color: #1a4d7a; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h1>Snowbound LLC — Condo Calendar App</h1>
+<p class="subtitle">Entity / Relationship Diagram &amp; Data Dictionary</p>
+
+<!-- E/R Diagram -->
+<div class="card">
+  <h2>E/R Diagram</h2>
+
+  <p class="diagram-label">Core business tables — owners, scheduling &amp; trades</p>
+  <div class="mermaid">
+erDiagram
+
+    owners {
+        int id PK
+        text short_name "NOT NULL UNIQUE"
+        text full_name
+        text phone
+        text display_info
+        bool is_admin
+        bool is_active
+    }
+
+    owner_emails {
+        int id PK
+        int owner_id FK
+        text email "NOT NULL"
+        bool is_primary
+    }
+
+    calendar {
+        int id PK
+        int year "NOT NULL"
+        int owner_id FK
+        text week_start "MM/DD/YYYY"
+        int week_number "1-5"
+    }
+
+    mud_weeks {
+        int id PK
+        int year "NOT NULL"
+        text week_start "MM/DD/YYYY"
+        int num_mud_weeks "3 or 4"
+        int num_thursdays "52 or 53"
+    }
+
+    trade_detail {
+        int id PK
+        int year "NOT NULL"
+        int owner_id FK
+        text week_start "MM/DD/YYYY"
+        bool is_traded
+        int current_holder_id FK
+        datetime trade_date
+        text trade_history
+        text comment
+        text calculated_owner
+    }
+
+    owners ||--o{ owner_emails  : "has emails"
+    owners ||--o{ calendar      : "scheduled"
+    owners ||--o{ trade_detail  : "originally owns"
+    owners ||--o{ trade_detail  : "currently holds"
+  </div>
+
+  <hr class="diagram-divider">
+
+  <p class="diagram-label">Supporting tables — audit log, auth, site config &amp; admin tools</p>
+  <div class="mermaid">
+erDiagram
+
+    audit {
+        int id PK
+        datetime timestamp
+        text email
+        text trade_type
+        text owner1
+        text owner1_week
+        text owner2
+        text owner2_week
+        text comment
+        text result1
+        text result2
+    }
+
+    magic_links {
+        int id PK
+        text email "NOT NULL"
+        text token "NOT NULL UNIQUE"
+        datetime created_at
+        datetime expires_at "NOT NULL"
+        bool used
+    }
+
+    site_config {
+        int id PK
+        text key "NOT NULL"
+        text value
+        text note
+    }
+
+    field_definitions {
+        int id PK
+        text table_name "NOT NULL"
+        text column_name "NOT NULL"
+        text display_name "NOT NULL"
+        text field_type
+        int display_order
+        int is_active
+        text lov_name
+    }
+
+    lov_values {
+        int id PK
+        text lov_name "NOT NULL"
+        text value
+        text display_label
+        int display_order
+        text query
+    }
+
+    fk_overrides {
+        int id PK
+        text table_name "NOT NULL"
+        text column_name "NOT NULL"
+        text ref_table "NOT NULL"
+    }
+
+    field_definitions }o--|| lov_values : "lov_name"
+  </div>
+</div>
+
+<!-- Data Dictionary -->
+<div class="card">
+  <h2>Data Dictionary</h2>
+  <div class="dict-grid">
+
+    <!-- owners -->
+    <div class="table-card">
+      <div class="table-card-header">owners</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">short_name</span> <span class="badge badge-nn">NN</span><span class="badge badge-uq">UQ</span></td><td class="col-type">TEXT</td><td class="col-desc">"Kamons", "Loyle"</td></tr>
+        <tr><td><span class="col-name">full_name</span></td><td class="col-type">TEXT</td><td class="col-desc">"Larry &amp; Maureen Kamons"</td></tr>
+        <tr><td><span class="col-name">phone</span></td><td class="col-type">TEXT</td><td class="col-desc">Free-form</td></tr>
+        <tr><td><span class="col-name">display_info</span></td><td class="col-type">TEXT</td><td class="col-desc">Full contact block for calendar</td></tr>
+        <tr><td><span class="col-name">is_admin</span></td><td class="col-type">BOOLEAN</td><td class="col-desc">1 = Larry only</td></tr>
+        <tr><td><span class="col-name">is_active</span></td><td class="col-type">BOOLEAN</td><td class="col-desc">0 = soft-deleted</td></tr>
+      </table>
+    </div>
+
+    <!-- owner_emails -->
+    <div class="table-card">
+      <div class="table-card-header">owner_emails</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">owner_id</span> <span class="badge badge-fk">FK</span><span class="badge badge-nn">NN</span></td><td class="col-type">INTEGER</td><td class="col-desc">→ owners.id</td></tr>
+        <tr><td><span class="col-name">email</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Lowercase, trimmed</td></tr>
+        <tr><td><span class="col-name">is_primary</span></td><td class="col-type">BOOLEAN</td><td class="col-desc">Primary contact email</td></tr>
+      </table>
+    </div>
+
+    <!-- calendar -->
+    <div class="table-card">
+      <div class="table-card-header">calendar</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">year</span> <span class="badge badge-nn">NN</span></td><td class="col-type">INTEGER</td><td class="col-desc">Calendar year</td></tr>
+        <tr><td><span class="col-name">owner_id</span> <span class="badge badge-fk">FK</span><span class="badge badge-nn">NN</span></td><td class="col-type">INTEGER</td><td class="col-desc">→ owners.id</td></tr>
+        <tr><td><span class="col-name">week_start</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Thursday, MM/DD/YYYY</td></tr>
+        <tr><td><span class="col-name">week_number</span></td><td class="col-type">INTEGER</td><td class="col-desc">1–5, owner's Nth week</td></tr>
+      </table>
+    </div>
+
+    <!-- mud_weeks -->
+    <div class="table-card">
+      <div class="table-card-header">mud_weeks</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">year</span> <span class="badge badge-nn">NN</span></td><td class="col-type">INTEGER</td><td class="col-desc">Calendar year</td></tr>
+        <tr><td><span class="col-name">week_start</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Thursday, MM/DD/YYYY</td></tr>
+        <tr><td><span class="col-name">num_mud_weeks</span></td><td class="col-type">INTEGER</td><td class="col-desc">3 or 4</td></tr>
+        <tr><td><span class="col-name">num_thursdays</span></td><td class="col-type">INTEGER</td><td class="col-desc">52 or 53</td></tr>
+      </table>
+    </div>
+
+    <!-- trade_detail -->
+    <div class="table-card">
+      <div class="table-card-header">trade_detail</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">year</span> <span class="badge badge-nn">NN</span></td><td class="col-type">INTEGER</td><td class="col-desc">Calendar year</td></tr>
+        <tr><td><span class="col-name">owner_id</span> <span class="badge badge-fk">FK</span><span class="badge badge-nn">NN</span></td><td class="col-type">INTEGER</td><td class="col-desc">→ owners.id (original)</td></tr>
+        <tr><td><span class="col-name">week_start</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Thursday, MM/DD/YYYY</td></tr>
+        <tr><td><span class="col-name">is_traded</span></td><td class="col-type">BOOLEAN</td><td class="col-desc">Default 0</td></tr>
+        <tr><td><span class="col-name">current_holder_id</span> <span class="badge badge-fk">FK</span></td><td class="col-type">INTEGER</td><td class="col-desc">→ owners.id (now)</td></tr>
+        <tr><td><span class="col-name">trade_date</span></td><td class="col-type">DATETIME</td><td class="col-desc">When recorded</td></tr>
+        <tr><td><span class="col-name">trade_history</span></td><td class="col-type">TEXT</td><td class="col-desc">"Sproul→Miller"</td></tr>
+        <tr><td><span class="col-name">comment</span></td><td class="col-type">TEXT</td><td class="col-desc">Max 40 chars</td></tr>
+        <tr><td><span class="col-name">audit_trail</span></td><td class="col-type">TEXT</td><td class="col-desc">Full audit string</td></tr>
+        <tr><td><span class="col-name">calculated_owner</span></td><td class="col-type">TEXT</td><td class="col-desc">Denormalized display name</td></tr>
+      </table>
+    </div>
+
+    <!-- audit -->
+    <div class="table-card">
+      <div class="table-card-header">audit</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">timestamp</span></td><td class="col-type">DATETIME</td><td class="col-desc">Default CURRENT_TIMESTAMP</td></tr>
+        <tr><td><span class="col-name">email</span></td><td class="col-type">TEXT</td><td class="col-desc">Who submitted</td></tr>
+        <tr><td><span class="col-name">trade_type</span></td><td class="col-type">TEXT</td><td class="col-desc">Trade Week / Give Away / Not Using / Comment</td></tr>
+        <tr><td><span class="col-name">owner1</span></td><td class="col-type">TEXT</td><td class="col-desc">Initiating owner</td></tr>
+        <tr><td><span class="col-name">owner1_week</span></td><td class="col-type">TEXT</td><td class="col-desc">MM/DD/YYYY</td></tr>
+        <tr><td><span class="col-name">owner2</span></td><td class="col-type">TEXT</td><td class="col-desc">Receiving owner (nullable)</td></tr>
+        <tr><td><span class="col-name">owner2_week</span></td><td class="col-type">TEXT</td><td class="col-desc">MM/DD/YYYY (nullable)</td></tr>
+        <tr><td><span class="col-name">comment</span></td><td class="col-type">TEXT</td><td class="col-desc">Free-form note</td></tr>
+        <tr><td><span class="col-name">result1</span></td><td class="col-type">TEXT</td><td class="col-desc">Audit record, side 1</td></tr>
+        <tr><td><span class="col-name">result2</span></td><td class="col-type">TEXT</td><td class="col-desc">Audit record, side 2</td></tr>
+      </table>
+    </div>
+
+    <!-- magic_links -->
+    <div class="table-card">
+      <div class="table-card-header">magic_links</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">email</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Link sent to this address</td></tr>
+        <tr><td><span class="col-name">token</span> <span class="badge badge-nn">NN</span><span class="badge badge-uq">UQ</span></td><td class="col-type">TEXT</td><td class="col-desc">Random URL-safe token</td></tr>
+        <tr><td><span class="col-name">created_at</span></td><td class="col-type">DATETIME</td><td class="col-desc">Default CURRENT_TIMESTAMP</td></tr>
+        <tr><td><span class="col-name">expires_at</span> <span class="badge badge-nn">NN</span></td><td class="col-type">DATETIME</td><td class="col-desc">created_at + 15 min</td></tr>
+        <tr><td><span class="col-name">used</span></td><td class="col-type">BOOLEAN</td><td class="col-desc">One-time use flag</td></tr>
+      </table>
+    </div>
+
+    <!-- site_config -->
+    <div class="table-card">
+      <div class="table-card-header">site_config</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">key</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">"Garage", "WiFi", "Lock Box"</td></tr>
+        <tr><td><span class="col-name">value</span></td><td class="col-type">TEXT</td><td class="col-desc">The code / password</td></tr>
+        <tr><td><span class="col-name">note</span></td><td class="col-type">TEXT</td><td class="col-desc">Neighbor contact info</td></tr>
+      </table>
+    </div>
+
+    <!-- field_definitions -->
+    <div class="table-card">
+      <div class="table-card-header">field_definitions</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">table_name</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Which table</td></tr>
+        <tr><td><span class="col-name">column_name</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Which column</td></tr>
+        <tr><td><span class="col-name">display_name</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Human-readable header</td></tr>
+        <tr><td><span class="col-name">field_type</span></td><td class="col-type">TEXT</td><td class="col-desc">text | checkbox | textarea | date | select</td></tr>
+        <tr><td><span class="col-name">display_order</span></td><td class="col-type">INTEGER</td><td class="col-desc">Column sort order</td></tr>
+        <tr><td><span class="col-name">is_active</span></td><td class="col-type">INTEGER</td><td class="col-desc">0 = hide column</td></tr>
+        <tr><td><span class="col-name">lov_name</span></td><td class="col-type">TEXT</td><td class="col-desc">Links to lov_values</td></tr>
+      </table>
+    </div>
+
+    <!-- lov_values -->
+    <div class="table-card">
+      <div class="table-card-header">lov_values</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">lov_name</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Matches field_definitions.lov_name</td></tr>
+        <tr><td><span class="col-name">value</span></td><td class="col-type">TEXT</td><td class="col-desc">Stored value</td></tr>
+        <tr><td><span class="col-name">display_label</span></td><td class="col-type">TEXT</td><td class="col-desc">Shown to user</td></tr>
+        <tr><td><span class="col-name">display_order</span></td><td class="col-type">INTEGER</td><td class="col-desc">Sort order</td></tr>
+        <tr><td><span class="col-name">query</span></td><td class="col-type">TEXT</td><td class="col-desc">SQL override for dynamic lists</td></tr>
+      </table>
+    </div>
+
+    <!-- fk_overrides -->
+    <div class="table-card">
+      <div class="table-card-header">fk_overrides</div>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+        <tr><td><span class="col-name">id</span> <span class="badge badge-pk">PK</span></td><td class="col-type">INTEGER</td><td class="col-desc">Auto-increment</td></tr>
+        <tr><td><span class="col-name">table_name</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Table containing the FK column</td></tr>
+        <tr><td><span class="col-name">column_name</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">The FK column name</td></tr>
+        <tr><td><span class="col-name">ref_table</span> <span class="badge badge-nn">NN</span></td><td class="col-type">TEXT</td><td class="col-desc">Table it references</td></tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- FK Summary -->
+<div class="card">
+  <h2>Foreign Key Summary</h2>
+  <table class="fk-table">
+    <tr><th>Table</th><th>Column</th><th></th><th>References</th><th>Note</th></tr>
+    <tr><td>owner_emails</td><td>owner_id</td><td class="arrow">→</td><td>owners.id</td><td>Auto-detected by convention</td></tr>
+    <tr><td>calendar</td><td>owner_id</td><td class="arrow">→</td><td>owners.id</td><td>Auto-detected by convention</td></tr>
+    <tr><td>trade_detail</td><td>owner_id</td><td class="arrow">→</td><td>owners.id</td><td>Auto-detected by convention</td></tr>
+    <tr><td>trade_detail</td><td>current_holder_id</td><td class="arrow">→</td><td>owners.id</td><td>Via fk_overrides table</td></tr>
+  </table>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    er: { diagramPadding: 40, fontSize: 14 },
+    fontSize: 14
+  });
+</script>
+</body>
+</html>

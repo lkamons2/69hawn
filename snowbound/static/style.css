@@ -1,0 +1,99 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Georgia, serif;
+  font-size: 16px;
+  color: #222;
+  background: #fff;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+header nav {
+  background: #1a4d7a;
+  padding: 10px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+header nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+header nav a:hover { text-decoration: underline; }
+
+main { padding: 20px 0; }
+
+h1 { margin-bottom: 16px; font-size: 1.4rem; }
+
+.year-nav { margin-bottom: 16px; display: flex; gap: 24px; }
+.year-nav a { color: #1a4d7a; font-size: 1rem; }
+
+.flash { padding: 10px 14px; margin-bottom: 12px; border-radius: 4px; }
+.flash-info { background: #d1ecf1; color: #0c5460; }
+.flash-error { background: #f8d7da; color: #721c24; }
+
+label { font-weight: bold; }
+
+input[type=email], input[type=text], select, textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+button {
+  background: #1a4d7a;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover { background: #13395c; }
+
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+th { background: #1a4d7a; color: #fff; }
+tr:nth-child(even) { background: #f5f5f5; }
+
+@media (max-width: 600px) {
+  body { font-size: 15px; }
+  header nav { flex-direction: column; gap: 8px; }
+}
+
+/* ── Calendar grid ── */
+.cal-grid { font-size: 0.85rem; }
+.cal-grid th { background: #1a4d7a; color: #fff; white-space: nowrap; text-align: center; }
+.cal-info-col { min-width: 160px; }
+.owner-cell { vertical-align: top; font-size: 0.8rem; min-width: 150px; white-space: pre-line; }
+.week-cell { vertical-align: top; min-width: 110px; font-size: 0.8rem; padding: 4px 6px; }
+.week-cell.traded { background: #fff8dc; }
+.week-cell.empty { background: #f9f9f9; }
+.week-dates { font-size: 0.78rem; color: #333; }
+.trade-info { color: #a00; font-weight: bold; font-size: 0.78rem; margin-top: 2px; }
+.week-comment { color: #555; font-size: 0.75rem; margin-top: 2px; word-break: break-word; }
+.site-info-row td { background: #eef4fb; font-size: 0.85rem; }
+.site-note { color: #555; }
+
+/* ── Lookup ── */
+.lookup-form .form-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+.lookup-form .form-group { flex: 1; min-width: 140px; }
+tr.traded-row { background: #fff8dc; }
+
+/* ── Forms ── */
+.form-section { background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; padding: 20px; max-width: 700px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.95rem; }
+
+/* ── Admin ── */
+#adminTable thead th { position: sticky; top: 0; z-index: 1; white-space: nowrap; }
+#adminTable td { font-size: 0.85rem; vertical-align: top; max-width: 300px; word-break: break-word; }

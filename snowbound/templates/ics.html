@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Download Calendar (.ics) — Snowbound LLC{% endblock %}
+
+{% block content %}
+<h1>Download Calendar (.ics)</h1>
+<p>Download a calendar file for any owner and year to add to Google Calendar, Outlook, or Apple Calendar.</p>
+
+<div class="form-section">
+  <form method="post" action="{{ url_for('ics.ics_download') }}">
+    <div class="form-group">
+      <label for="owner_id">Owner *</label>
+      <select id="owner_id" name="owner_id" required>
+        <option value="">— Select Owner —</option>
+        {% for o in owners %}
+          <option value="{{ o.id }}">{{ o.short_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="year">Year *</label>
+      <select id="year" name="year" required>
+        {% for y in year_range %}
+          <option value="{{ y }}" {% if y == 2026 %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit">Download .ics File</button>
+  </form>
+</div>
+
+<p style="margin-top:20px;color:#555;font-size:0.9rem;">
+  The downloaded file contains all of the selected owner's scheduled weeks for the year,
+  including any trades. Import it into your calendar app to see the dates.
+</p>
+{% endblock %}

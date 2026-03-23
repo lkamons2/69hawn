@@ -1,0 +1,13 @@
+.env
+snowbound.db
+instance/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.vscode/
+*.egg-info/
+dist/
+build/
+GAS-code/
+.claude/

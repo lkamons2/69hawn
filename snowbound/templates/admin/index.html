@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Admin — Snowbound LLC{% endblock %}
+
+{% block content %}
+<h1>Admin — Table Browser</h1>
+
+<h2 style="margin-top:20px;font-size:1.1rem;">Tables</h2>
+<ul style="margin-top:8px;list-style:none;padding:0;">
+  {% for name, ttype in tables %}
+    {% if ttype == 'table' %}
+    <li style="margin:4px 0;">
+      <a href="{{ url_for('admin.table', name=name) }}">{{ name }}</a>
+    </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+<h2 style="margin-top:20px;font-size:1.1rem;">Views (read-only)</h2>
+<ul style="margin-top:8px;list-style:none;padding:0;">
+  {% for name, ttype in tables %}
+    {% if ttype == 'view' %}
+    <li style="margin:4px 0;">
+      <a href="{{ url_for('admin.table', name=name) }}">{{ name }}</a>
+    </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+{% endblock %}
