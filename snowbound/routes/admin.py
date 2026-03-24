@@ -191,7 +191,16 @@ def table(name):
     columns = _build_cols(name, pragma)
     pk_col = next((c["name"] for c in columns if c["pk"]), None)
 
-    rows = db.session.execute(text(f"SELECT * FROM [{name}]")).fetchall()
+    # Build WHERE clause from URL params that match actual column names
+    valid_cols = {c["name"] for c in columns}
+    filters = {k: v for k, v in request.args.items() if k in valid_cols and v != ""}
+    if filters:
+        where = " AND ".join(f"[{k}] = :{k}" for k in filters)
+        rows = db.session.execute(
+            text(f"SELECT * FROM [{name}] WHERE {where}"), filters
+        ).fetchall()
+    else:
+        rows = db.session.execute(text(f"SELECT * FROM [{name}]")).fetchall()
 
     return render_template(
         "admin/table.html",
@@ -201,6 +210,7 @@ def table(name):
         is_view=is_view,
         pk_col=pk_col,
         all_tables=_all_tables(),
+        filters=filters,
     )
 
 

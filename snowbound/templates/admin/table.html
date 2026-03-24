@@ -13,7 +13,21 @@
   {% endif %}
   <a href="{{ url_for('admin.export_csv', name=table_name) }}" class="btn-small btn-gray">Export CSV</a>
   <span style="font-size:0.85rem;color:#666;">{{ rows|length }} row{% if rows|length != 1 %}s{% endif %}</span>
+  {% if filters %}
+    <a href="{{ url_for('admin.table', name=table_name) }}" class="btn-small btn-gray">Clear Filters</a>
+  {% endif %}
 </div>
+
+<form method="get" style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+  {% for col in columns %}
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <label style="font-size:0.75rem;color:#666;">{{ col.display_name }}</label>
+      <input type="text" name="{{ col.name }}" value="{{ filters.get(col.name, '') }}"
+             style="width:110px;padding:4px 6px;font-size:0.85rem;border:1px solid #ccc;border-radius:3px;">
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn-small" style="margin-bottom:1px;">Filter</button>
+</form>
 
 <div style="overflow-x:auto;">
   <table id="adminTable">
