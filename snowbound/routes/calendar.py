@@ -67,13 +67,13 @@ def year_view(year):
 
     owners = sorted(owners, key=owner_first_week)
 
+    WEEKS_PER_ROW = 5
     rows = []
-    max_weeks = 5
     for owner in owners:
-        week_cells = {}
+        all_cells = {}
         for t in owner_trades.get(owner.id, []):
-            wn = week_num_map.get((t.owner_id, t.week_start), len(week_cells) + 1)
-            week_cells[wn] = {
+            wn = week_num_map.get((t.owner_id, t.week_start), len(all_cells) + 1)
+            all_cells[wn] = {
                 "week_start": t.week_start,
                 "week_end": _week_end(t.week_start),
                 "is_traded": bool(t.is_traded),
@@ -81,15 +81,17 @@ def year_view(year):
                 "original_owner": owner.short_name,
                 "comment": t.comment or "",
             }
-        if week_cells:
-            max_weeks = max(max_weeks, max(week_cells.keys()))
-        cells = [week_cells.get(n) for n in range(1, max_weeks + 1)]
-        rows.append({"owner": owner, "cells": cells})
 
-    # Pad all rows to same length
-    for row in rows:
-        while len(row["cells"]) < max_weeks:
-            row["cells"].append(None)
+        max_wn = max(all_cells.keys()) if all_cells else 0
+        num_rows = max(1, (max_wn + WEEKS_PER_ROW - 1) // WEEKS_PER_ROW)
+        for row_idx in range(num_rows):
+            start = row_idx * WEEKS_PER_ROW + 1
+            cells = [all_cells.get(start + i) for i in range(WEEKS_PER_ROW)]
+            rows.append({
+                "owner": owner,
+                "cells": cells,
+                "show_owner_info": row_idx == 0,
+            })
 
     return render_template(
         "calendar.html",
@@ -99,7 +101,6 @@ def year_view(year):
         prev_year=year - 1,
         next_year=year + 1,
         year_range=range(2022, 2101),
-        max_weeks=max_weeks,
     )
 
 
