@@ -11,6 +11,7 @@
     <nav>
       <a href="{{ url_for('calendar.current') }}">Calendar</a>
       <a href="{{ url_for('calendar.lookup') }}">Lookup</a>
+      <a href="{{ url_for('calendar.directory') }}">Directory</a>
       <a href="{{ url_for('ics.ics_form') }}">Download .ics</a>
       {% if session.owner_id %}
         <a href="{{ url_for('form.form') }}">Trade/Comment</a>
@@ -18,7 +19,7 @@
         {% if session.is_admin %}
           <a href="{{ url_for('admin.table', name='owners') }}">Admin</a>
         {% endif %}
-        <a href="{{ url_for('auth.logout') }}">Logout ({{ session.owner_short_name }})</a>
+        <a href="{{ url_for('auth.logout') }}">Logout ({{ session.owner_name }})</a>
       {% else %}
         <a href="{{ url_for('auth.login') }}">Login</a>
       {% endif %}

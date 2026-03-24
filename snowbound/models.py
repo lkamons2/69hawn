@@ -6,14 +6,28 @@ class Owner(db.Model):
     __tablename__ = "owners"
 
     id = db.Column(db.Integer, primary_key=True)
-    short_name = db.Column(db.Text, nullable=False, unique=True)
-    full_name = db.Column(db.Text)
-    phone = db.Column(db.Text)
-    display_info = db.Column(db.Text)
-    is_admin = db.Column(db.Boolean, default=False)
+    name = db.Column(db.Text, nullable=False, unique=True)
+    notes = db.Column(db.Text)
     is_active = db.Column(db.Boolean, default=True)
 
-    emails = db.relationship("OwnerEmail", backref="owner", lazy=True)
+    contacts = db.relationship("OwnerEmail", backref="owner", lazy=True)
+
+    def display_info(self):
+        """Build display text: owner name, then one line per contact."""
+        lines = [self.name]
+        for c in self.contacts:
+            parts = []
+            if c.name:
+                parts.append(c.name)
+            if c.phone:
+                parts.append(c.phone)
+            if c.email:
+                parts.append(c.email)
+            if parts:
+                lines.append(" ".join(parts))
+        if self.notes:
+            lines.append(self.notes)
+        return "\n".join(lines)
 
 
 class OwnerEmail(db.Model):
@@ -21,7 +35,9 @@ class OwnerEmail(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey("owners.id"), nullable=False)
+    name = db.Column(db.Text)
     email = db.Column(db.Text, nullable=False)
+    phone = db.Column(db.Text)
     is_primary = db.Column(db.Boolean, default=False)
     is_admin = db.Column(db.Boolean, default=False)
 

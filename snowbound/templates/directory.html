@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Owner Directory — Snowbound LLC{% endblock %}
+
+{% block content %}
+<h1>Owner Directory</h1>
+
+<div style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr>
+        {% for col in columns %}
+          <th>{{ col }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        {% for val in row %}
+          <td>{{ val if val else '' }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

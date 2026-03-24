@@ -69,11 +69,20 @@ def _create_views():
     for view_name, year_expr in views:
         sql.execute(db.text(f"""
             CREATE VIEW IF NOT EXISTS {view_name} AS
-            SELECT o.display_info, td.week_start, td.comment, td.calculated_owner
+            SELECT o.name, td.week_start, td.comment, td.calculated_owner
             FROM trade_detail td
             JOIN owners o ON td.owner_id = o.id
             WHERE td.year = {year_expr}
             ORDER BY td.week_start
         """))
+    sql.execute(db.text("""
+        CREATE VIEW IF NOT EXISTS v_directory AS
+        SELECT o.name AS Owner, e.name AS Name, e.phone AS Phone, e.email AS Email,
+               o.notes AS Notes
+        FROM owners o
+        LEFT JOIN owner_emails e ON e.owner_id = o.id
+        WHERE o.is_active = 1
+        ORDER BY o.name, e.is_primary DESC, e.name
+    """))
     sql.commit()
     sql.close()

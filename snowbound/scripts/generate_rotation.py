@@ -39,8 +39,8 @@ def get_mud_weeks(year):
 def run():
     app = create_app()
     with app.app_context():
-        # Build owner lookup: short_name -> id
-        owner_map = {o.short_name: o.id for o in Owner.query.all()}
+        # Build owner lookup: name -> id
+        owner_map = {o.name: o.id for o in Owner.query.all()}
         missing = set(OWNER_NAMES) - set(owner_map.keys())
         if missing:
             print(f"ERROR: owners not found in DB: {missing}")

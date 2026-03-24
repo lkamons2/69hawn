@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 from collections import defaultdict
 from flask import Blueprint, render_template, redirect, url_for, request
+from sqlalchemy import text
 from .. import db
 from ..models import Calendar, TradeDetail, Owner, SiteConfig
 from ..decorators import login_required
@@ -76,8 +77,8 @@ def year_view(year):
                 "week_start": t.week_start,
                 "week_end": _week_end(t.week_start),
                 "is_traded": bool(t.is_traded),
-                "current_owner": t.calculated_owner or owner.short_name,
-                "original_owner": owner.short_name,
+                "current_owner": t.calculated_owner or owner.name,
+                "original_owner": owner.name,
                 "comment": t.comment or "",
             }
 
@@ -120,7 +121,7 @@ def year_view(year):
 @bp.route("/lookup")
 @login_required
 def lookup():
-    owners = Owner.query.filter_by(is_active=True).order_by(Owner.short_name).all()
+    owners = Owner.query.filter_by(is_active=True).order_by(Owner.name).all()
     owner_id = request.args.get("owner_id", type=int)
     year = request.args.get("year", type=int, default=date.today().year)
 
@@ -133,8 +134,8 @@ def lookup():
             weeks.append({
                 "week_start": t.week_start,
                 "week_end": _week_end(t.week_start),
-                "original_owner": t.owner.short_name,
-                "current_owner": t.calculated_owner or t.owner.short_name,
+                "original_owner": t.owner.name,
+                "current_owner": t.calculated_owner or t.owner.name,
                 "is_traded": bool(t.is_traded),
                 "comment": t.comment or "",
             })
@@ -147,3 +148,11 @@ def lookup():
         selected_year=year,
         year_range=range(2022, 2101),
     )
+
+
+@bp.route("/directory")
+@login_required
+def directory():
+    rows = db.session.execute(text("SELECT * FROM v_directory")).fetchall()
+    columns = ["Owner", "Name", "Phone", "Email", "Notes"]
+    return render_template("directory.html", rows=rows, columns=columns)

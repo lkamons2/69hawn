@@ -12,7 +12,7 @@
         <option value="0" {% if selected_owner_id == 0 %}selected{% endif %}>All Owners</option>
         {% for o in owners %}
           <option value="{{ o.id }}" {% if o.id == selected_owner_id %}selected{% endif %}>
-            {{ o.short_name }}
+            {{ o.name }}
           </option>
         {% endfor %}
       </select>

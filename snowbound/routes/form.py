@@ -12,7 +12,7 @@ bp = Blueprint("form", __name__)
 @bp.route("/form", methods=["GET", "POST"])
 @login_required
 def form():
-    owners = Owner.query.filter_by(is_active=True).order_by(Owner.short_name).all()
+    owners = Owner.query.filter_by(is_active=True).order_by(Owner.name).all()
 
     today_year = date.today().year
     trades_by_owner = defaultdict(list)
@@ -79,11 +79,11 @@ def _process_form(owners):
 
         owner2 = Owner.query.get(owner2_id)
 
-        who_has1 = trade1.calculated_owner or owner1.short_name
-        who_has2 = trade2.calculated_owner or owner2.short_name
+        who_has1 = trade1.calculated_owner or owner1.name
+        who_has2 = trade2.calculated_owner or owner2.name
 
         trade_comment = (
-            f"Traded {owner1.short_name} {week1} For {owner2.short_name} {week2}"
+            f"Traded {owner1.name} {week1} For {owner2.name} {week2}"
             + (f" {comment}" if comment else "")
         )
         audit_trail = trade_comment
@@ -92,20 +92,20 @@ def _process_form(owners):
         _update_trade(trade2, owner1, trade_comment, audit_trail)
 
         audit = Audit(
-            email=session.get("owner_short_name", "unknown"),
+            email=session.get("owner_name", "unknown"),
             trade_type=trade_type,
-            owner1=owner1.short_name,
+            owner1=owner1.name,
             owner1_week=week1,
-            owner2=owner2.short_name,
+            owner2=owner2.name,
             owner2_week=week2,
             comment=comment,
-            result1=f"{who_has1}->{owner2.short_name}",
-            result2=f"{who_has2}->{owner1.short_name}",
+            result1=f"{who_has1}->{owner2.name}",
+            result2=f"{who_has2}->{owner1.name}",
         )
         db.session.add(audit)
         db.session.commit()
         flash(
-            f"Trade recorded: {owner1.short_name} {week1} \u2194 {owner2.short_name} {week2}",
+            f"Trade recorded: {owner1.name} {week1} \u2194 {owner2.name} {week2}",
             "info",
         )
 
@@ -115,29 +115,29 @@ def _process_form(owners):
         trade1.comment = comment
 
         audit = Audit(
-            email=session.get("owner_short_name", "unknown"),
+            email=session.get("owner_name", "unknown"),
             trade_type=trade_type,
-            owner1=owner1.short_name,
+            owner1=owner1.name,
             owner1_week=week1,
             comment=comment,
         )
         db.session.add(audit)
         db.session.commit()
-        flash(f"{trade_type} recorded for {owner1.short_name} week of {week1}", "info")
+        flash(f"{trade_type} recorded for {owner1.name} week of {week1}", "info")
 
     return redirect(url_for("calendar.current"))
 
 
 def _update_trade(trade, new_holder, comment, audit_trail):
-    orig_name = trade.owner.short_name
+    orig_name = trade.owner.name
     if not trade.trade_history:
-        trade.trade_history = f"{orig_name}->{new_holder.short_name}"
+        trade.trade_history = f"{orig_name}->{new_holder.name}"
     else:
-        trade.trade_history = f"{trade.trade_history}->{new_holder.short_name}"
+        trade.trade_history = f"{trade.trade_history}->{new_holder.name}"
 
     trade.is_traded = True
     trade.current_holder_id = new_holder.id
-    trade.calculated_owner = new_holder.short_name
+    trade.calculated_owner = new_holder.name
     trade.trade_date = datetime.utcnow()
     trade.comment = comment
 

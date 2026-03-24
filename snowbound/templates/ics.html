@@ -12,7 +12,7 @@
       <select id="owner_id" name="owner_id" required>
         <option value="">— Select Owner —</option>
         {% for o in owners %}
-          <option value="{{ o.id }}">{{ o.short_name }}</option>
+          <option value="{{ o.id }}">{{ o.name }}</option>
         {% endfor %}
       </select>
     </div>

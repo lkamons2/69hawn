@@ -37,9 +37,9 @@ def run():
 
         # 2025 calendar: should have 10 owners × some weeks
         rows_2025 = db.session.execute(db.text(
-            "SELECT o.short_name, COUNT(*) as cnt FROM calendar c "
+            "SELECT o.name, COUNT(*) as cnt FROM calendar c "
             "JOIN owners o ON c.owner_id = o.id WHERE c.year = 2025 "
-            "GROUP BY o.short_name ORDER BY o.short_name"
+            "GROUP BY o.name ORDER BY o.name"
         )).fetchall()
         print("\n2025 calendar weeks by owner:")
         for name, cnt in rows_2025:

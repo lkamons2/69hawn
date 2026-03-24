@@ -156,7 +156,7 @@ def read_db_rotation(start_year, end_year):
         year = r.year
         if year not in result:
             result[year] = []
-        result[year].append((r.owner.short_name, r.week_start, r.week_number))
+        result[year].append((r.owner.name, r.week_start, r.week_number))
     return result
 
 
@@ -171,7 +171,7 @@ def read_db_trade_detail(start_year, end_year):
             .filter(TradeDetail.year >= start_year, TradeDetail.year <= end_year)
             .all())
     for r in rows:
-        key = (r.year, r.owner.short_name, r.week_start)
+        key = (r.year, r.owner.name, r.week_start)
         result[key] = {
             "is_traded": bool(r.is_traded),
             "calculated_owner": r.calculated_owner,

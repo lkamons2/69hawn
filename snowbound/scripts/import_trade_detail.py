@@ -13,7 +13,7 @@ from snowbound import create_app, db
 from snowbound.models import Owner, TradeDetail
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-XLSX_PATH = os.path.join(PROJECT_ROOT, "SnowBoundersCalendarApp.xlsx")
+XLSX_PATH = os.path.join(PROJECT_ROOT, "GAS-code", "SnowBoundersCalendarApp.xlsx")
 
 # Sheet columns (0-indexed):
 # 0=YEAR, 1=NAME, 2=Week, 3=Traded, 4=Who Has Condo,
@@ -27,7 +27,7 @@ def run():
             print("trade_detail already has data — skipping. Delete rows first to re-import.")
             return
 
-        owner_map = {o.short_name: o.id for o in Owner.query.all()}
+        owner_map = {o.name: o.id for o in Owner.query.all()}
         if not owner_map:
             print("ERROR: owners table is empty. Run seed_owners.py first.")
             sys.exit(1)

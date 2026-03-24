@@ -10,84 +10,63 @@ from snowbound import create_app, db
 from snowbound.models import Owner, OwnerEmail, SiteConfig
 
 # Data extracted from GAS-code/SnowBoundersCalendarApp.xlsx NameList sheet
-# Format: (short_name, full_name, phone, display_info, is_admin, emails_list)
-# emails_list: list of (email, is_primary)
+# Format: (name, notes, contacts_list)
+# contacts_list: list of (contact_name, email, phone, is_primary, is_admin)
 OWNERS = [
     (
-        "Boone",
-        "Jim & Janice Boone",
-        "316-393-7390",
-        "Jim & Janice Boone\nitchyboone@yahoo.com\n316-393-7390",
-        False,
-        [("itchyboone@yahoo.com", True)],
+        "Boone", None,
+        [("Jim", "itchyboone@yahoo.com", "316-393-7390", True, False)],
     ),
     (
-        "Kamons",
-        "Larry & Maureen Kamons",
-        "Larry cell 412-537-2486\nMaureen cell 412-965-2020",
-        "Larry & Maureen Kamons\nlarry@kamons.com\nmaureen@kamons.com\nLarry cell 412-537-2486\nMaureen cell 412-965-2020",
-        True,  # is_admin
-        [("larry@kamons.com", True, True), ("maureen@kamons.com", False, False)],
-    ),
-    (
-        "Loyle",
-        "Pam Loyle",
-        "Cell 316-253-5999",
-        "Pam Loyle\nployle3@gmail.com\nCell 316-253-5999",
-        False,
-        [("ployle3@gmail.com", True)],
-    ),
-    (
-        "Miller",
-        "Stan & Joni Miller",
-        "316-461-2143",
-        "Stan & Joni Miller\nstanmillerict@gmail.com\nvchornets1975@yahoo.com\nMorgan.lucille3@gmail.com\n316-461-2143",
-        False,
+        "Kamons", None,
         [
-            ("stanmillerict@gmail.com", True),
-            ("vchornets1975@yahoo.com", False),
-            ("morgan.lucille3@gmail.com", False),
+            ("Larry", "larry@kamons.com", "412-537-2486", True, True),
+            ("Maureen", "maureen@kamons.com", "412-965-2020", False, False),
         ],
     ),
     (
-        "Mitchell",
-        "Linda Mitchell",
-        "913-226-5699",
-        "Linda Mitchell\nlindakmitchell.lkm@gmail.com\n913-226-5699",
-        False,
-        [("lindakmitchell.lkm@gmail.com", True)],
+        "Loyle", None,
+        [("Pam", "ployle3@gmail.com", "316-253-5999", True, False)],
     ),
     (
-        "Smith",
-        "Brad & Cathrine Smith",
-        "316-308-7803\n316-371-1128",
-        "Brad & Cathrine Smith\nbriarfox10@gmail.com\nwichitahomeprovider@yahoo.com\n316-308-7803\n316-371-1128",
-        False,
-        [("briarfox10@gmail.com", True), ("wichitahomeprovider@yahoo.com", False)],
+        "Miller", None,
+        [
+            ("Stan", "stanmillerict@gmail.com", "316-461-2143", True, False),
+            ("Joni", "vchornets1975@yahoo.com", None, False, False),
+            ("Morgan", "morgan.lucille3@gmail.com", None, False, False),
+        ],
     ),
     (
-        "Sproul",
-        "Dave & Sid Sproul",
-        "Dave Cell 316-644-9444\nLand Line 316-260-1005",
-        "Dave & Sid Sproul\nsproulcons@gmail.com\nsproul2071@gmail.com\nDave Cell 316-644-9444\nLand Line 316-260-1005",
-        False,
-        [("sproulcons@gmail.com", True), ("sproul2071@gmail.com", False)],
+        "Mitchell", None,
+        [("Linda", "lindakmitchell.lkm@gmail.com", "913-226-5699", True, False)],
     ),
     (
-        "Stalker",
-        "Dave & Sharon Stalker",
-        "316-655-2536\n316-634-2074",
-        "Dave & Sharon Stalker\ndaves@dsfinancialgroup.com\n316-655-2536\n316-634-2074",
-        False,
-        [("daves@dsfinancialgroup.com", True)],
+        "Smith", None,
+        [
+            ("Brad", "briarfox10@gmail.com", "316-308-7803", True, False),
+            ("Cathrine", "wichitahomeprovider@yahoo.com", "316-371-1128", False, False),
+        ],
     ),
     (
-        "Zerfas",
-        "Dave & Bob Zerfas",
-        "678-410-6828\n217-553-2845",
-        "Dave & Bob Zerfas\nzerfas.bob@gmail.com\ndavezerfas12@gmail.com\n678-410-6828\n217-553-2845",
-        False,
-        [("zerfas.bob@gmail.com", True), ("davezerfas12@gmail.com", False)],
+        "Sproul", "Land Line 316-260-1005",
+        [
+            ("Dave", "sproulcons@gmail.com", "316-644-9444", True, False),
+            ("Sid", "sproul2071@gmail.com", None, False, False),
+        ],
+    ),
+    (
+        "Stalker", None,
+        [
+            ("Dave", "daves@dsfinancialgroup.com", "316-655-2536", True, False),
+            ("Sharon", None, "316-634-2074", False, False),
+        ],
+    ),
+    (
+        "Zerfas", None,
+        [
+            ("Bob", "zerfas.bob@gmail.com", "678-410-6828", True, False),
+            ("Dave", "davezerfas12@gmail.com", "217-553-2845", False, False),
+        ],
     ),
 ]
 
@@ -105,26 +84,23 @@ def run():
             print("owners table already has data — skipping. Delete rows first to re-seed.")
             return
 
-        for short_name, full_name, phone, display_info, is_admin, emails in OWNERS:
+        for name, notes, contacts in OWNERS:
             owner = Owner(
-                short_name=short_name,
-                full_name=full_name,
-                phone=phone,
-                display_info=display_info,
-                is_admin=is_admin,
+                name=name,
+                notes=notes,
                 is_active=True,
             )
             db.session.add(owner)
             db.session.flush()  # get owner.id
 
-            for email_tuple in emails:
-                email, is_primary = email_tuple[0], email_tuple[1]
-                is_admin_email = email_tuple[2] if len(email_tuple) > 2 else False
+            for contact_name, email, phone, is_primary, is_admin in contacts:
                 db.session.add(OwnerEmail(
                     owner_id=owner.id,
-                    email=email.lower().strip(),
+                    name=contact_name,
+                    email=email.lower().strip() if email else "",
+                    phone=phone,
                     is_primary=is_primary,
-                    is_admin=is_admin_email,
+                    is_admin=is_admin,
                 ))
 
         for key, value, note in SITE_CONFIG:

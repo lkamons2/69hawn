@@ -9,7 +9,7 @@ bp = Blueprint("ics", __name__)
 
 @bp.route("/ics")
 def ics_form():
-    owners = Owner.query.filter_by(is_active=True).order_by(Owner.short_name).all()
+    owners = Owner.query.filter_by(is_active=True).order_by(Owner.name).all()
     return render_template("ics.html", owners=owners, year_range=range(2022, 2101))
 
 
@@ -36,13 +36,13 @@ def ics_download():
     cal.add("prodid", "-//Snowbound LLC//Condo Calendar//EN")
     cal.add("version", "2.0")
     cal.add("calscale", "GREGORIAN")
-    cal.add("x-wr-calname", f"Snowbound {owner.short_name} {year}")
+    cal.add("x-wr-calname", f"Snowbound {owner.name} {year}")
 
     for t in trades:
         start = datetime.strptime(t.week_start, "%m/%d/%Y").date()
         end = start + timedelta(days=7)  # exclusive end for all-day events
 
-        holder = t.calculated_owner or owner.short_name
+        holder = t.calculated_owner or owner.name
         summary = f"69hawn.com - {holder}"
 
         event = Event()
@@ -54,7 +54,7 @@ def ics_download():
         event.add("uid", f"{t.week_start.replace('/', '')}-{owner_id}@69hawn.com")
         cal.add_component(event)
 
-    filename = f"snowbound_{owner.short_name.lower()}_{year}.ics"
+    filename = f"snowbound_{owner.name.lower()}_{year}.ics"
     return Response(
         cal.to_ical(),
         mimetype="text/calendar",

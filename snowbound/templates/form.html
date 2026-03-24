@@ -22,7 +22,7 @@
       <select id="owner1_id" name="owner1_id" required onchange="loadWeeks('owner1_id','week1')">
         <option value="">— Select Owner —</option>
         {% for o in owners %}
-          <option value="{{ o.id }}">{{ o.short_name }}</option>
+          <option value="{{ o.id }}">{{ o.name }}</option>
         {% endfor %}
       </select>
     </div>
@@ -40,7 +40,7 @@
         <select id="owner2_id" name="owner2_id" onchange="loadWeeks('owner2_id','week2')">
           <option value="">— Select Owner —</option>
           {% for o in owners %}
-            <option value="{{ o.id }}">{{ o.short_name }}</option>
+            <option value="{{ o.id }}">{{ o.name }}</option>
           {% endfor %}
         </select>
       </div>
