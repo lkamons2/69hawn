@@ -12,8 +12,9 @@ def email():
     owners = Owner.query.filter_by(is_active=True).order_by(Owner.id).all()
     all_emails = []
     for owner in owners:
-        for e in owner.emails:
-            all_emails.append(e.email)
+        for e in owner.contacts:
+            if e.email:
+                all_emails.append(e.email)
 
     emails_csv = ",".join(all_emails)
     emails_semi = ";".join(all_emails)
