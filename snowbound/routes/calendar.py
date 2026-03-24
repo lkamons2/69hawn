@@ -53,22 +53,21 @@ def year_view(year):
               .order_by(TradeDetail.week_start)
               .all())
 
+    owner_map = {o.id: o for o in owners}
+
     owner_trades = defaultdict(list)
     for t in trades:
         owner_trades[t.owner_id].append(t)
 
-    # Sort owners by their earliest week_start in this year (chronological rotation order)
-    def owner_first_week(owner):
-        weeks = owner_trades.get(owner.id, [])
-        if weeks:
-            d = datetime.strptime(weeks[0].week_start, "%m/%d/%Y")
-            return d
-        return datetime.max
-
-    owners = sorted(owners, key=owner_first_week)
-
+    # Build rotation slots: each slot is a row of up to 5 weeks.
+    # For most owners there is one slot (wn 1-5). Loyle has two
+    # rotation positions so she gets two slots (wn 1-5 and wn 6-10).
+    # Slots are sorted independently by their first week_start so
+    # Loyle's two slots appear in their correct rotation positions
+    # rather than being grouped together.
     WEEKS_PER_ROW = 5
-    rows = []
+    slots = []  # list of (first_week_start, owner, cells_dict, slot_index)
+
     for owner in owners:
         all_cells = {}
         for t in owner_trades.get(owner.id, []):
@@ -87,11 +86,25 @@ def year_view(year):
         for row_idx in range(num_rows):
             start = row_idx * WEEKS_PER_ROW + 1
             cells = [all_cells.get(start + i) for i in range(WEEKS_PER_ROW)]
-            rows.append({
-                "owner": owner,
-                "cells": cells,
-                "show_owner_info": row_idx == 0,
-            })
+            # First non-empty cell's week_start determines sort position
+            first_ws = next((c["week_start"] for c in cells if c), None)
+            first_dt = datetime.strptime(first_ws, "%m/%d/%Y") if first_ws else datetime.max
+            slots.append((first_dt, owner, cells, row_idx))
+
+    # Sort all slots chronologically by their first week_start
+    slots.sort(key=lambda s: s[0])
+
+    # Track which owners have already had their info row shown
+    owner_info_shown = set()
+    rows = []
+    for _, owner, cells, row_idx in slots:
+        show_info = owner.id not in owner_info_shown
+        owner_info_shown.add(owner.id)
+        rows.append({
+            "owner": owner,
+            "cells": cells,
+            "show_owner_info": show_info,
+        })
 
     return render_template(
         "calendar.html",
