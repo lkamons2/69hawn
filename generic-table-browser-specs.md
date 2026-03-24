@@ -45,7 +45,7 @@ PRAGMA table_info([<table_name>])
 
 Returns column name, data type, not-null flag, and primary key flag. The browser renders whatever columns exist — if you `ALTER TABLE ADD COLUMN`, it appears automatically on next page load with no code changes.
 
-If `field_definitions` rows exist for this table (see Section 9), they override display names, ordering, and field types. If not, the browser falls back to raw PRAGMA data and renders everything as plain text with title-cased headers.
+If `field_definitions` rows exist for this table (see Section 13), they override display names, ordering, and field types. If not, the browser falls back to raw PRAGMA data and renders everything as plain text with title-cased headers.
 
 ---
 
@@ -67,16 +67,30 @@ If the result is `'view'` → Add, Edit, and Delete are suppressed. The table br
 - `+ Add Row` button shown for tables, hidden for views
 - `Export CSV` button shown for all
 - Checkbox columns render as ✓ or blank (not 0/1)
-- FK columns render as hyperlinks (see Section 11)
+- FK columns render as hyperlinks (see Section 12)
 
 ---
 
-## 7. Client-Side Sorting
+## 7. Filter Bar
+
+Every table/view page renders a filter bar above the data grid. One text input per column, plus a **Filter** button.
+
+- Filters are passed as URL query parameters: `?year=2026&is_traded=1`
+- Only parameters matching actual column names are applied (others ignored)
+- Empty inputs are excluded from the filter
+- Server-side: builds a `WHERE col = :val AND ...` clause using parameterized queries
+- Exact match only (no wildcards or LIKE)
+- A **Clear Filters** button appears when any filter is active, linking back to the unfiltered table
+- Bookmarkable: since filters are URL params, filtered views can be shared or bookmarked directly
+
+---
+
+## 8. Client-Side Sorting
 
 - Click a column header → sort ascending. Click again → descending.
 - **Shift-click** → add secondary/tertiary sort key (up to 3 levels)
 - Sort badges on headers show priority and direction: `1 ▲`, `2 ▼`, `3 ▲`
-- Section header rows (see Section 8) are excluded from sorting
+- Section header rows (see Section 9) are excluded from sorting
 - All JavaScript, no server round-trip
 
 **Smart type detection** (in priority order):
@@ -91,7 +105,7 @@ Stable sort: equal values preserve original DB order.
 
 ---
 
-## 8. The `h=` Report Header Convention
+## 9. The `h=` Report Header Convention
 
 When the **first column** of any row starts with `h=`, that row renders as a **styled section header**:
 
@@ -116,7 +130,7 @@ SELECT short_name, full_name FROM owners WHERE is_active = 0;
 
 ---
 
-## 9. CRUD
+## 10. CRUD
 
 All write operations are suppressed for views.
 
@@ -139,7 +153,7 @@ All write operations are suppressed for views.
 
 ---
 
-## 10. CSV Export
+## 11. CSV Export
 
 - `Export CSV` button → `GET /admin/table/<name>/export.csv`
 - Server-side: queries all rows, streams as CSV file download
@@ -149,11 +163,11 @@ All write operations are suppressed for views.
 
 ---
 
-## 11. Foreign Key Auto-Linking
+## 12. Foreign Key Auto-Linking
 
 FK columns in the table browser render their values as hyperlinks to the edit page of the referenced row. Resolution uses two mechanisms:
 
-### 11a. Convention-based (automatic)
+### 12a. Convention-based (automatic)
 
 Any column named `<stem>_id` (but not plain `id`) is automatically detected as a FK. The browser tries to find the referenced table by:
 1. `<stem>s` (e.g., `owner_id` → `owners`)
@@ -161,7 +175,7 @@ Any column named `<stem>_id` (but not plain `id`) is automatically detected as a
 
 If a matching table exists in `sqlite_master`, the cell value becomes a link to `/admin/table/<ref_table>/edit/<value>`.
 
-### 11b. `fk_overrides` table (explicit metadata)
+### 12b. `fk_overrides` table (explicit metadata)
 
 For columns where naming convention doesn't resolve (e.g., `current_holder_id` → `owners`), add a row to `fk_overrides`. Explicit overrides always win over convention.
 
@@ -189,7 +203,7 @@ The `fk_overrides` table is seeded at app startup for all known non-conventional
 
 ---
 
-## 12. Progressive Enhancement with `field_definitions`
+## 13. Progressive Enhancement with `field_definitions`
 
 Optional. If this table exists and has rows for the target table, the browser uses them. If not, everything still works from PRAGMA alone.
 
@@ -222,7 +236,7 @@ Columns not listed in `field_definitions` still appear as plain text with auto-g
 
 ---
 
-## 13. Progressive Enhancement with `lov_values`
+## 14. Progressive Enhancement with `lov_values`
 
 Optional. Provides dropdown options for `select` fields. Supports static rows and dynamic SQL queries.
 
@@ -260,7 +274,7 @@ INSERT INTO lov_values (lov_name, query) VALUES
 
 ---
 
-## 14. Database Requirements
+## 15. Database Requirements
 
 The browser needs no tables of its own to function. The supporting tables are all optional and additive:
 
@@ -272,7 +286,7 @@ The browser needs no tables of its own to function. The supporting tables are al
 
 ---
 
-## 15. Key Design Principles
+## 16. Key Design Principles
 
 1. **No per-table code.** Columns discovered from PRAGMA. `ALTER TABLE ADD COLUMN` appears automatically.
 2. **Progressive enhancement.** Works bare from PRAGMA alone. Add `field_definitions` for nicer labels and form types. Add `lov_values` for controlled vocabularies. Add `fk_overrides` for explicit FK links. Each layer is optional and additive.
