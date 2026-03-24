@@ -19,11 +19,7 @@
     <thead>
       <tr>
         <th class="cal-info-col">Owner Info</th>
-        <th>WEEK 1</th>
-        <th>WEEK 2</th>
-        <th>WEEK 3</th>
-        <th>WEEK 4</th>
-        <th>WEEK 5</th>
+        {% for n in range(1, max_weeks + 1) %}<th>WEEK {{ n }}</th>{% endfor %}
       </tr>
     </thead>
     <tbody>
@@ -33,19 +29,19 @@
       {% if garage %}
       <tr class="site-info-row">
         <td><strong>Garage: {{ garage.value }}</strong></td>
-        <td colspan="5" class="site-note">{{ garage.note }}</td>
+        <td colspan="{{ max_weeks }}" class="site-note">{{ garage.note }}</td>
       </tr>
       {% endif %}
       {% if wifi %}
       <tr class="site-info-row">
         <td><strong>WiFi: {{ wifi.value }}</strong></td>
-        <td colspan="5" class="site-note">{{ wifi.note }}</td>
+        <td colspan="{{ max_weeks }}" class="site-note">{{ wifi.note }}</td>
       </tr>
       {% endif %}
       {% if lockbox %}
       <tr class="site-info-row">
         <td><strong>Lock Box: {{ lockbox.value }}</strong></td>
-        <td colspan="5" class="site-note">{{ lockbox.note }}</td>
+        <td colspan="{{ max_weeks }}" class="site-note">{{ lockbox.note }}</td>
       </tr>
       {% endif %}
 

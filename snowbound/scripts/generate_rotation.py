@@ -85,16 +85,19 @@ def run():
                     owner_index = (owner_index + 1) % len(rotated_owners)
                 current_date += timedelta(weeks=1)
 
-            # Insert calendar rows
+            # Insert calendar rows — track week_number per owner across all slots
+            owner_week_counts = {}
             for slot_idx, (name, weeks) in enumerate(zip(rotated_owners, owner_week_lists)):
                 oid = owner_map[name]
-                for week_num, week_start in enumerate(weeks, start=1):
+                start = owner_week_counts.get(oid, 0)
+                for i, week_start in enumerate(weeks):
                     calendar_rows.append(Calendar(
                         year=year,
                         owner_id=oid,
                         week_start=week_start,
-                        week_number=week_num,
+                        week_number=start + i + 1,
                     ))
+                owner_week_counts[oid] = start + len(weeks)
 
             last_owner_index = (last_owner_index + owner_index) % len(OWNER_NAMES)
 

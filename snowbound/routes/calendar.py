@@ -68,6 +68,7 @@ def year_view(year):
     owners = sorted(owners, key=owner_first_week)
 
     rows = []
+    max_weeks = 5
     for owner in owners:
         week_cells = {}
         for t in owner_trades.get(owner.id, []):
@@ -80,8 +81,15 @@ def year_view(year):
                 "original_owner": owner.short_name,
                 "comment": t.comment or "",
             }
-        cells = [week_cells.get(n) for n in range(1, 6)]
+        if week_cells:
+            max_weeks = max(max_weeks, max(week_cells.keys()))
+        cells = [week_cells.get(n) for n in range(1, max_weeks + 1)]
         rows.append({"owner": owner, "cells": cells})
+
+    # Pad all rows to same length
+    for row in rows:
+        while len(row["cells"]) < max_weeks:
+            row["cells"].append(None)
 
     return render_template(
         "calendar.html",
@@ -91,6 +99,7 @@ def year_view(year):
         prev_year=year - 1,
         next_year=year + 1,
         year_range=range(2022, 2101),
+        max_weeks=max_weeks,
     )
 
 
