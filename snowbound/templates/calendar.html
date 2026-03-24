@@ -12,8 +12,10 @@
     {% endfor %}
   </select>
   <a href="{{ url_for('calendar.year_view', year=next_year) }}">{{ next_year }} &rarr;</a>
+  <button onclick="window.print()" class="btn-print">Print</button>
 </div>
 
+<div class="print-title" style="display:none;">Snowbound LLC Condo Calendar — {{ year }}</div>
 <div style="overflow-x:auto;">
   <table class="cal-grid">
     <thead>

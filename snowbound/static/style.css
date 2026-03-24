@@ -84,6 +84,50 @@ tr:nth-child(even) { background: #f5f5f5; }
 .site-info-row td { background: #eef4fb; font-size: 0.85rem; }
 .site-note { color: #555; }
 
+/* ── Print button ── */
+.btn-print {
+  background: #1a4d7a;
+  color: #fff;
+  border: none;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto;
+}
+.btn-print:hover { background: #13395c; }
+
+/* ── Print styles ── */
+@media print {
+  @page { size: landscape; margin: 0.3in; }
+
+  /* Hide everything except the calendar table */
+  header, .year-nav, h1, .flash, .btn-print { display: none !important; }
+  body { max-width: none; padding: 0; font-size: 8pt; }
+  main { padding: 0; }
+
+  /* Show print-only title */
+  .print-title { display: block !important; font-size: 11pt; font-weight: bold; margin-bottom: 4px; }
+
+  /* Shrink table to fit one landscape page */
+  .cal-grid { font-size: 7pt; width: 100%; }
+  .cal-grid th { font-size: 7pt; padding: 2px 4px; }
+  .owner-cell { font-size: 6.5pt; min-width: 0; padding: 2px 4px; max-width: 130px; overflow: hidden; }
+  .week-cell { font-size: 6.5pt; min-width: 0; padding: 2px 3px; }
+  .week-dates { font-size: 6.5pt; }
+  .trade-info { font-size: 6.5pt; }
+  .week-comment { font-size: 6pt; max-height: 2.4em; overflow: hidden; }
+  .site-info-row td { font-size: 7pt; padding: 2px 4px; }
+
+  /* Preserve traded-week background color */
+  .week-cell.traded { background: #fff8dc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .site-info-row td { background: #eef4fb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  th { background: #1a4d7a !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Prevent page breaks inside the table */
+  .cal-grid, .cal-grid tr { page-break-inside: avoid; }
+}
+
 /* ── Lookup ── */
 .lookup-form .form-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
 .lookup-form .form-group { flex: 1; min-width: 140px; }
