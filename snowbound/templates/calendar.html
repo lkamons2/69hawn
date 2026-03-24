@@ -47,7 +47,7 @@
 
       {% for row in rows %}
       <tr>
-        <td class="owner-cell">{% if row.show_owner_info %}{{ row.owner.display_info | replace('\n', '<br>') | safe if row.owner.display_info else row.owner.short_name }}{% endif %}</td>
+        <td class="owner-cell">{{ row.owner.display_info | replace('\n', '<br>') | safe if row.owner.display_info else row.owner.short_name }}</td>
         {% for cell in row.cells %}
           {% if cell %}
         <td class="week-cell{% if cell.is_traded %} traded{% endif %}">
