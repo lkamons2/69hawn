@@ -1,5 +1,3 @@
-import smtplib
-from email.mime.text import MIMEText
 from flask import (
     Blueprint, render_template, request, session,
     redirect, url_for, flash, abort, current_app,
@@ -8,22 +6,13 @@ from datetime import datetime, timedelta
 import secrets
 from .. import db
 from ..models import OwnerEmail, MagicLink, Owner
+from ..email import send_email
 
 bp = Blueprint("auth", __name__)
 
 
 def _send_magic_link_email(to_email, magic_url):
     """Send magic link via SMTP. Falls back to flash message if SMTP not configured."""
-    host = current_app.config.get("SMTP_HOST", "")
-    if not host:
-        flash(f"Magic link (dev only — SMTP not configured): {magic_url}", "info")
-        return
-
-    port = current_app.config.get("SMTP_PORT", 587)
-    user = current_app.config.get("SMTP_USER", "")
-    password = current_app.config.get("SMTP_PASS", "")
-    from_addr = current_app.config.get("SMTP_FROM", "info@69hawn.com")
-
     body = (
         f"Click the link below to log in to the Snowbound LLC Condo Calendar.\n\n"
         f"{magic_url}\n\n"
@@ -31,22 +20,16 @@ def _send_magic_link_email(to_email, magic_url):
         f"and can only be used once.\n\n"
         f"If you did not request this link, you can ignore this email."
     )
+    subject = "Snowbound LLC Calendar — Login Link"
 
-    msg = MIMEText(body)
-    msg["Subject"] = "Snowbound LLC Calendar — Login Link"
-    msg["From"] = from_addr
-    msg["To"] = to_email
+    if not current_app.config.get("SMTP_HOST"):
+        flash(f"Magic link (SMTP not configured): {magic_url}", "info")
+        return
 
-    try:
-        with smtplib.SMTP(host, port) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.login(user, password)
-            smtp.sendmail(from_addr, [to_email], msg.as_string())
+    if send_email([to_email], subject, body):
         flash("Login link sent — check your email.", "info")
-    except Exception as e:
-        current_app.logger.error(f"SMTP error: {e}")
-        flash(f"Could not send email. Magic link (dev fallback): {magic_url}", "error")
+    else:
+        flash(f"Could not send email. Magic link (fallback): {magic_url}", "error")
 
 
 @bp.route("/login", methods=["GET", "POST"])

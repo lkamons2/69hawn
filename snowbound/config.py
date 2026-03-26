@@ -23,6 +23,6 @@ class Config:
     # When set, all outgoing emails are redirected here instead of the real recipient.
     # Useful for testing — set to empty string in production.
     TEST_EMAIL_OVERRIDE = os.environ.get("TEST_EMAIL_OVERRIDE", "")
-    # Testing mode: suppresses trade notification emails and widens the
-    # week dropdown range to today-3 … today+3 years (vs. today-1 … today+3).
+    # Testing mode: widens the week dropdown range to today-3 … today+3
+    # years (vs. today-1 … today+3).  Does NOT affect email.
     TESTING_MODE = os.environ.get("TESTING_MODE", "false").lower() in ("true", "1", "yes")

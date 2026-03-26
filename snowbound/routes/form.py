@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from .. import db
 from ..models import Owner, TradeDetail, Audit
 from ..decorators import login_required
+from ..email import send_email, send_trade_notification, get_owner_emails
 
 bp = Blueprint("form", __name__)
 
@@ -108,10 +109,46 @@ def _process_form(owners):
         )
         db.session.add(audit)
         db.session.commit()
-        flash(
-            f"Trade recorded: {owner1.name} {week1} \u2194 {owner2.name} {week2}",
-            "info",
+
+        # --- Trade notification email ---
+        changed_by = session.get("owner_name", "unknown")
+        owner_email_map = [
+            (owner1.name, get_owner_emails(owner1)),
+            (owner2.name, get_owner_emails(owner2)),
+        ]
+
+        # Double-trade: if someone else already held either week, notify them too
+        notified = {owner1.name, owner2.name}
+        for holder_name in (who_has1, who_has2):
+            if holder_name and holder_name not in notified:
+                dt_owner = Owner.query.filter_by(name=holder_name).first()
+                if dt_owner:
+                    owner_email_map.append((dt_owner.name, get_owner_emails(dt_owner)))
+                    notified.add(holder_name)
+
+        subject = (
+            f"69hawn.com Trade ({owner1.name}) {week1}"
+            f" and ({owner2.name}) {week2}"
         )
+        body_text = (
+            f"Trade: ({owner1.name}) {week1} and ({owner2.name}) {week2}\n\n"
+            f"Change made by {changed_by}\n"
+        )
+        if comment:
+            body_text += f"Comment: {comment}\n"
+        body_html = f"<html><body>{body_text.replace(chr(10), '<br>')}</body></html>"
+
+        if send_trade_notification(owner_email_map, subject, body_text, body_html):
+            flash(
+                f"Trade recorded: {owner1.name} {week1} \u2194 {owner2.name} {week2}"
+                f" \u2014 email sent",
+                "info",
+            )
+        else:
+            flash(
+                f"Trade recorded: {owner1.name} {week1} \u2194 {owner2.name} {week2}",
+                "info",
+            )
 
     else:
         if not comment:
@@ -127,7 +164,25 @@ def _process_form(owners):
         )
         db.session.add(audit)
         db.session.commit()
-        flash(f"{trade_type} recorded for {owner1.name} week of {week1}", "info")
+
+        # --- Non-trade notification email ---
+        changed_by = session.get("owner_name", "unknown")
+        owner_email_map = [(owner1.name, get_owner_emails(owner1))]
+        subject = (
+            f"69hawn.com Change made to ({owner1.name}) for {week1}"
+            f" by {changed_by}"
+        )
+        body_text = (
+            f"Change: {trade_type} for ({owner1.name}) week of {week1}\n\n"
+            f"Change made by {changed_by}\n"
+            f"Comment: {comment}\n"
+        )
+        body_html = f"<html><body>{body_text.replace(chr(10), '<br>')}</body></html>"
+
+        if send_trade_notification(owner_email_map, subject, body_text, body_html):
+            flash(f"{trade_type} recorded for {owner1.name} week of {week1} \u2014 email sent", "info")
+        else:
+            flash(f"{trade_type} recorded for {owner1.name} week of {week1}", "info")
 
     return redirect(url_for("calendar.current"))
 
