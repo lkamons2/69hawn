@@ -122,14 +122,17 @@ def year_view(year):
 @login_required
 def lookup():
     owners = Owner.query.filter_by(is_active=True).order_by(Owner.name).all()
-    owner_id = request.args.get("owner_id", type=int)
+    owner_ids = request.args.getlist("owner_id", type=int)
     year = request.args.get("year", type=int, default=date.today().year)
 
+    # 0 means "All Owners"
+    select_all = 0 in owner_ids
+
     weeks = []
-    if owner_id is not None:
+    if owner_ids:
         q = TradeDetail.query.filter_by(year=year)
-        if owner_id != 0:
-            q = q.filter_by(owner_id=owner_id)
+        if not select_all:
+            q = q.filter(TradeDetail.owner_id.in_(owner_ids))
         for t in q.order_by(TradeDetail.week_start).all():
             weeks.append({
                 "week_start": t.week_start,
@@ -144,7 +147,7 @@ def lookup():
         "lookup.html",
         owners=owners,
         weeks=weeks,
-        selected_owner_id=owner_id,
+        selected_owner_ids=owner_ids,
         selected_year=year,
         year_range=range(2022, 2101),
     )

@@ -1,7 +1,7 @@
 import json
 from datetime import date, datetime
 from collections import defaultdict
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, current_app
 from .. import db
 from ..models import Owner, TradeDetail, Audit
 from ..decorators import login_required
@@ -15,8 +15,12 @@ def form():
     owners = Owner.query.filter_by(is_active=True).order_by(Owner.name).all()
 
     today_year = date.today().year
+    if current_app.config.get("TESTING_MODE"):
+        year_start, year_end = today_year - 3, today_year + 4
+    else:
+        year_start, year_end = today_year - 1, today_year + 4
     trades_by_owner = defaultdict(list)
-    for yr in range(today_year - 1, today_year + 4):
+    for yr in range(year_start, year_end):
         rows = (TradeDetail.query
                 .filter_by(year=yr)
                 .order_by(TradeDetail.week_start)
