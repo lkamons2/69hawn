@@ -180,7 +180,7 @@ def activity():
     rows = db.session.execute(
         text(
             "SELECT timestamp, email, trade_type, owner1, owner1_week, "
-            "owner2, owner2_week, comment "
+            "owner2, owner2_week, comment, result1, result2 "
             "FROM audit WHERE timestamp LIKE :pattern "
             "ORDER BY timestamp DESC"
         ),

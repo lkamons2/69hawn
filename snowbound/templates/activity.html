@@ -26,6 +26,8 @@
         <th data-col="5" onclick="sortTable(event, 5)" style="cursor:pointer;white-space:nowrap;">Owner 2 <span class="sort-badge" id="badge-5"></span></th>
         <th data-col="6" onclick="sortTable(event, 6)" style="cursor:pointer;white-space:nowrap;">Week 2 <span class="sort-badge" id="badge-6"></span></th>
         <th data-col="7" onclick="sortTable(event, 7)" style="cursor:pointer;white-space:nowrap;">Comment <span class="sort-badge" id="badge-7"></span></th>
+        <th data-col="8" onclick="sortTable(event, 8)" style="cursor:pointer;white-space:nowrap;">Old Value <span class="sort-badge" id="badge-8"></span></th>
+        <th data-col="9" onclick="sortTable(event, 9)" style="cursor:pointer;white-space:nowrap;">New Value <span class="sort-badge" id="badge-9"></span></th>
       </tr>
     </thead>
     <tbody id="activityBody">
@@ -39,6 +41,8 @@
         <td>{{ row[5] or '' }}</td>
         <td>{{ row[6] or '' }}</td>
         <td>{{ row[7] or '' }}</td>
+        <td>{{ row[8] or '' }}</td>
+        <td>{{ row[9] or '' }}</td>
       </tr>
       {% endfor %}
     </tbody>
