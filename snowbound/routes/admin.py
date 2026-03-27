@@ -195,7 +195,7 @@ def table(name):
     valid_cols = {c["name"] for c in columns}
     filters = {k: v for k, v in request.args.items() if k in valid_cols and v != ""}
     if filters:
-        where = " AND ".join(f"[{k}] = :{k}" for k in filters)
+        where = " AND ".join(f"[{k}] LIKE :{k}" for k in filters)
         rows = db.session.execute(
             text(f"SELECT * FROM [{name}] WHERE {where}"), filters
         ).fetchall()

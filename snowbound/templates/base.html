@@ -12,6 +12,7 @@
       <a href="{{ url_for('calendar.current') }}">Calendar</a>
       <a href="{{ url_for('calendar.lookup') }}">Lookup</a>
       <a href="{{ url_for('calendar.directory') }}">Directory</a>
+      <a href="{{ url_for('calendar.activity') }}">Activity</a>
       <a href="{{ url_for('ics.ics_form') }}">Download .ics</a>
       {% if session.owner_id %}
         <a href="{{ url_for('form.form') }}">Trade/Comment</a>

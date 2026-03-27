@@ -171,3 +171,24 @@ def directory():
     rows = db.session.execute(text("SELECT * FROM v_directory")).fetchall()
     columns = ["Owner", "Name", "Phone", "Email", "Notes"]
     return render_template("directory.html", rows=rows, columns=columns)
+
+
+@bp.route("/activity")
+@login_required
+def activity():
+    year = request.args.get("year", type=int, default=date.today().year)
+    rows = db.session.execute(
+        text(
+            "SELECT timestamp, email, trade_type, owner1, owner1_week, "
+            "owner2, owner2_week, comment "
+            "FROM audit WHERE timestamp LIKE :pattern "
+            "ORDER BY timestamp DESC"
+        ),
+        {"pattern": f"{year}%"},
+    ).fetchall()
+    return render_template(
+        "activity.html",
+        rows=rows,
+        selected_year=year,
+        year_range=range(2022, 2101),
+    )
