@@ -49,11 +49,15 @@
 
       {% for row in rows %}
       <tr>
-        <td class="owner-cell">{{ row.owner.display_info() | replace('\n', '<br>') | safe }}</td>
+        <td class="owner-cell">
+          {% set info_lines = row.owner.display_info().split('\n') %}
+          <span class="owner-name">{{ info_lines[0] }}</span>
+          {% if info_lines|length > 1 %}<br>{{ info_lines[1:] | join('<br>') | safe }}{% endif %}
+        </td>
         {% for cell in row.cells %}
           {% if cell %}
         <td class="week-cell{% if cell.is_traded %} traded{% endif %}">
-            <div class="week-dates" style="white-space:nowrap;">{{ cell.week_start }} &mdash; {{ cell.week_end }}</div>
+            <div class="week-dates" style="white-space:nowrap;">{{ cell.week_start|short_date }}--{{ cell.week_end|short_date }}</div>
             {% if cell.is_traded %}
               <div class="trade-info">&#8594; {{ cell.current_owner }}</div>
             {% endif %}

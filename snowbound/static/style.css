@@ -74,11 +74,12 @@ tr:nth-child(even) { background: #f5f5f5; }
 .cal-grid { font-size: 0.85rem; table-layout: fixed; width: 100%; }
 .cal-grid th { background: #1a4d7a; color: #fff; white-space: nowrap; text-align: center; }
 .cal-info-col { width: 16%; }
-.owner-cell { vertical-align: top; font-size: 0.8rem; white-space: pre-line; overflow: hidden; }
-.week-cell { vertical-align: top; font-size: 0.8rem; padding: 4px 6px; overflow: hidden; word-break: break-word; }
+.owner-cell { vertical-align: top; font-size: 0.8rem; overflow: hidden; line-height: 1.2; padding: 2px 4px; }
+.owner-name { font-size: 1.15rem; font-weight: bold; line-height: 1.1; }
+.week-cell { vertical-align: top; font-size: 0.8rem; padding: 2px 4px; overflow: hidden; word-break: break-word; line-height: 1.2; }
 .week-cell.traded { background: #fff8dc; }
 .week-cell.empty { background: #f9f9f9; }
-.week-dates { font-size: 0.78rem; color: #333; }
+.week-dates { font-size: 1.15rem; color: #333; }
 .trade-info { color: #a00; font-weight: bold; font-size: 0.78rem; margin-top: 2px; }
 .week-comment { color: #555; font-size: 0.75rem; margin-top: 2px; word-break: break-word; }
 .site-info-row td { background: #eef4fb; font-size: 0.85rem; }
@@ -109,15 +110,16 @@ tr:nth-child(even) { background: #f5f5f5; }
   /* Show print-only title */
   .print-title { display: block !important; font-size: 11pt; font-weight: bold; margin-bottom: 4px; }
 
-  /* Shrink table to fit one landscape page */
-  .cal-grid { font-size: 7pt; width: 100%; }
-  .cal-grid th { font-size: 7pt; padding: 2px 4px; }
-  .owner-cell { font-size: 6.5pt; min-width: 0; padding: 2px 4px; max-width: 130px; overflow: hidden; }
-  .week-cell { font-size: 6.5pt; min-width: 0; padding: 2px 3px; }
-  .week-dates { font-size: 6.5pt; }
-  .trade-info { font-size: 6.5pt; }
-  .week-comment { font-size: 6pt; max-height: 2.4em; overflow: hidden; }
-  .site-info-row td { font-size: 7pt; padding: 2px 4px; }
+  /* Scale table to fit one landscape page */
+  .cal-grid { font-size: 7.5pt; width: 100%; }
+  .cal-grid th { font-size: 7.5pt; padding: 1px 3px; }
+  .owner-cell { font-size: 7pt; min-width: 0; padding: 1px 3px; max-width: 130px; overflow: hidden; line-height: 1.15; }
+  .owner-name { font-size: 9pt; font-weight: bold; }
+  .week-cell { font-size: 7pt; min-width: 0; padding: 1px 2px; line-height: 1.15; }
+  .week-dates { font-size: 11pt; }
+  .trade-info { font-size: 7pt; }
+  .week-comment { font-size: 6.5pt; max-height: 2.4em; overflow: hidden; }
+  .site-info-row td { font-size: 7.5pt; padding: 1px 3px; }
 
   /* Preserve traded-week background color */
   .week-cell.traded { background: #fff8dc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }

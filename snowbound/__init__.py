@@ -27,6 +27,13 @@ def create_app():
     app.register_blueprint(email_bp)
     app.register_blueprint(admin_bp)
 
+    @app.template_filter("short_date")
+    def short_date_filter(val):
+        """MM/DD/YYYY -> MM/DD/YY for display only."""
+        if val and len(val) == 10 and val[2] == "/" and val[5] == "/":
+            return val[:6] + val[8:]
+        return val
+
     with app.app_context():
         db.create_all()
         _create_views()
