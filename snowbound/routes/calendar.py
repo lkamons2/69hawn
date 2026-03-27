@@ -173,6 +173,11 @@ def directory():
     return render_template("directory.html", rows=rows, columns=columns)
 
 
+@bp.route("/help")
+def help_page():
+    return render_template("help.html")
+
+
 @bp.route("/activity")
 @login_required
 def activity():

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Use the Snowbound LLC Calendar Site</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      color: #1a4d7a;
+      font-size: 28px;
+      border-bottom: 3px solid #1a4d7a;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #1a4d7a;
+      font-size: 24px;
+      margin-top: 40px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 6px;
+    }
+    .toc {
+      background: #f0f4f8;
+      padding: 20px 30px;
+      border-radius: 8px;
+      margin: 20px 0 30px 0;
+    }
+    .toc ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .toc li {
+      margin: 8px 0;
+      font-size: 18px;
+    }
+    .toc a {
+      color: #1a4d7a;
+      text-decoration: none;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+    .step {
+      margin: 16px 0;
+      padding-left: 0;
+    }
+    .step-number {
+      display: inline-block;
+      background: #1a4d7a;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 32px;
+      font-weight: bold;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    .tip {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .tip strong {
+      color: #2e7d32;
+    }
+    .warning {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .warning strong {
+      color: #e65100;
+    }
+    .back-to-top {
+      font-size: 14px;
+      color: #1a4d7a;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 30px 0;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 12px 0;
+      display: block;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 12px 0;
+    }
+    th {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 2px solid #ccc;
+      background: #f0f4f8;
+    }
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .login-link {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 20px;
+      background: #1a4d7a;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .login-link:hover {
+      background: #13395c;
+    }
+  </style>
+</head>
+<body>
+
+<h1 id="top">How to Use the Snowbound LLC Calendar Site</h1>
+
+<a href="{{ url_for('auth.login') }}" class="login-link">Go to Login Page</a>
+
+<p style="margin-top:20px;">
+  This guide walks you through everything you can do on the new Snowbound LLC
+  condo calendar website. The new site replaces the old Google Sheets calendar.
+</p>
+
+<p><strong>What changed and why:</strong></p>
+<ul>
+  <li>The old calendar on Google Sheets was <strong>open to anyone with the link</strong> &mdash;
+      no login was required. That meant the lock box code, garage code, and WiFi
+      password were visible to the entire internet.</li>
+  <li>The new site requires you to <strong>log in with your email address</strong>.
+      No password to remember &mdash; you just click a link in your email.</li>
+  <li>Everything else works the same way it always has. Same calendar, same
+      trading, same owner information.</li>
+</ul>
+
+<div class="toc">
+  <strong>What's in this guide:</strong>
+  <ul>
+    <li><a href="#logging-in">1. Logging In (Magic Link)</a></li>
+    <li><a href="#calendar">2. Viewing the Calendar</a></li>
+    <li><a href="#lookup">3. Looking Up Your Weeks</a></li>
+    <li><a href="#trade">4. Trading, Giving Away, or Not Using a Week</a></li>
+    <li><a href="#ics">5. Adding Weeks to Your Phone or Computer Calendar</a></li>
+    <li><a href="#email">6. Emailing All Owners</a></li>
+    <li><a href="#directory">7. Viewing the Owner Directory</a></li>
+    <li><a href="#activity">8. Viewing the Activity Log</a></li>
+    <li><a href="#nav">9. Finding Your Way Around (The Menu Bar)</a></li>
+    <li><a href="#troubleshooting">10. Troubleshooting</a></li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="logging-in">1. Logging In (Magic Link)</h2>
+<!-- ============================================================ -->
+
+<p>
+  The new site uses a <strong>"magic link"</strong> to log you in. There is no
+  password to create or remember. Here's how it works:
+</p>
+
+<div class="step">
+  <span class="step-number">1</span>
+  Go to <strong>69hawn.com</strong> and click <strong>"Click Here For Secure Site to view / modify the calendar."</strong>
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/Landing Page.png') }}" alt="The 69hawn.com landing page">
+
+<div class="step">
+  <span class="step-number">2</span>
+  You will see a login page. Type in <strong>your email address</strong> &mdash;
+  the same one you use for Snowbound communications &mdash; and click
+  <strong>"Send Magic Link."</strong>
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/Login.png') }}" alt="The login page">
+
+<div class="step">
+  <span class="step-number">3</span>
+  Check your email. You will receive a message from <strong>69hawn@gmail.com</strong>
+  with a subject line of <strong>"Snowbound LLC Calendar &mdash; Login Link."</strong>
+  <strong>Click the link in the email.</strong>
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/Magic Link Email.png') }}" alt="The magic link email in Gmail">
+
+<div class="step">
+  <span class="step-number">4</span>
+  That's it &mdash; you're logged in! The site will open to the calendar.
+  You'll stay logged in for <strong>7 days</strong> before needing to log in again.
+</div>
+
+<div class="tip">
+  <strong>Tip:</strong> The magic link expires after 15 minutes and can only be
+  used once. If it expires, just go back and request a new one.
+</div>
+
+<div class="warning">
+  <strong>Important:</strong> You must use the email address that is on file with
+  Snowbound LLC. If you're not sure which email to use, ask Larry.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="calendar">2. Viewing the Calendar</h2>
+<!-- ============================================================ -->
+
+<p>
+  After you log in, the calendar is the first thing you see. It shows
+  <strong>who has the condo each week</strong> for the entire year.
+</p>
+
+<img src="{{ url_for('static', filename='screenshots/Calendar Grid Redacted.png') }}" alt="The calendar year grid">
+
+<p><strong>What you'll see:</strong></p>
+<ul>
+  <li><strong>Top rows:</strong> The garage code, WiFi password, and lock box code,
+      along with neighbor contact information.</li>
+  <li><strong>Left column:</strong> Each owner's name, email, and phone number.</li>
+  <li><strong>Week columns (1 through 5):</strong> The dates for each of that owner's
+      weeks. If a week has been traded, you'll see who it was traded to
+      (shown in <span style="color:red;">red</span>).</li>
+</ul>
+
+<p><strong>To look at a different year:</strong></p>
+<ul>
+  <li>Click the <strong>left arrow (&larr; 2025)</strong> to go to the previous year.</li>
+  <li>Click the <strong>right arrow (2027 &rarr;)</strong> to go to the next year.</li>
+  <li>Use the <strong>dropdown</strong> in the middle to jump to any year.</li>
+</ul>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+  <img src="{{ url_for('static', filename='screenshots/Left Year Redacted.png') }}" alt="Left arrow to previous year" style="max-width:45%;">
+  <img src="{{ url_for('static', filename='screenshots/Right Year.png') }}" alt="Right arrow and Print button" style="max-width:45%;">
+</div>
+
+<div class="tip">
+  <strong>Tip:</strong> You can print the calendar by clicking the
+  <strong>"Print"</strong> button in the top right area of the calendar page.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="lookup">3. Looking Up Your Weeks</h2>
+<!-- ============================================================ -->
+
+<p>
+  The <strong>Lookup</strong> page lets you quickly find when your weeks are
+  (or look up any other owner's weeks).
+</p>
+
+<div class="step">
+  <span class="step-number">1</span>
+  Click <strong>"Lookup"</strong> in the menu bar at the top of the page.
+</div>
+
+<div class="step">
+  <span class="step-number">2</span>
+  Choose <strong>how to search</strong>:
+  <ul>
+    <li><strong>"Original Owner"</strong> &mdash; shows all weeks originally
+        assigned to that owner, even if they traded some away.</li>
+    <li><strong>"Current Holder"</strong> &mdash; shows only weeks that owner
+        actually has right now, including any they received in a trade.</li>
+  </ul>
+</div>
+
+<div class="step">
+  <span class="step-number">3</span>
+  Select <strong>your name</strong> (or "All Owners") from the owner list.
+</div>
+
+<div class="step">
+  <span class="step-number">4</span>
+  Pick a <strong>year</strong> and click <strong>"Look Up."</strong>
+</div>
+
+<p><strong>Search by Original Owner:</strong></p>
+<img src="{{ url_for('static', filename='screenshots/Lookup Owner.png') }}" alt="Lookup by Original Owner">
+
+<p><strong>Search by Current Holder:</strong></p>
+<img src="{{ url_for('static', filename='screenshots/Lookup Current Holder.png') }}" alt="Lookup by Current Holder">
+
+<p>
+  The results show a list of weeks with the start date, end date, original
+  owner, current holder, whether it was traded, and any comments.
+</p>
+
+<div class="tip">
+  <strong>Tip:</strong> You can click on the column headers to sort the results.
+  For example, click "Week Start" to sort by date.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="trade">4. Trading, Giving Away, or Not Using a Week</h2>
+<!-- ============================================================ -->
+
+<p>
+  The <strong>Trade/Comment</strong> page is where you manage your weeks.
+  You must be logged in to use it.
+</p>
+
+<div class="step">
+  <span class="step-number">1</span>
+  Click <strong>"Trade/Comment"</strong> in the menu bar.
+</div>
+
+<div class="step">
+  <span class="step-number">2</span>
+  Choose a <strong>Trade Type</strong> from the dropdown:
+</div>
+
+<table>
+  <tr>
+    <th>Type</th>
+    <th>What it does</th>
+  </tr>
+  <tr>
+    <td><strong>Trade Week</strong></td>
+    <td>Swap your week with another owner's week. You pick both owners and both weeks.</td>
+  </tr>
+  <tr>
+    <td><strong>Give Away</strong></td>
+    <td>Let everyone know your week is available if someone wants it.</td>
+  </tr>
+  <tr>
+    <td><strong>Not Using</strong></td>
+    <td>Let everyone know you will not be using your week.</td>
+  </tr>
+  <tr>
+    <td><strong>Using Condo</strong></td>
+    <td>Confirm that you will be using your week.</td>
+  </tr>
+  <tr>
+    <td><strong>Comment</strong></td>
+    <td>Add a note to a week without changing anything else.</td>
+  </tr>
+</table>
+
+<div class="step">
+  <span class="step-number">3</span>
+  Select <strong>Owner 1</strong> (usually yourself) and then select the
+  <strong>week</strong> from the dropdown. The week list loads automatically
+  after you pick an owner.
+</div>
+
+<div class="step">
+  <span class="step-number">4</span>
+  If you chose <strong>"Trade Week,"</strong> a second set of fields will appear.
+  Select <strong>Owner 2</strong> and their week.
+</div>
+
+<div class="step">
+  <span class="step-number">5</span>
+  Add a <strong>comment</strong> if you'd like (optional, up to 40 characters).
+</div>
+
+<div class="step">
+  <span class="step-number">6</span>
+  Click <strong>"Submit."</strong>
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/Trade Form.png') }}" alt="The Trade/Comment form">
+
+<div class="tip">
+  <strong>Tip:</strong> After you submit, an email notification is automatically
+  sent to the owners involved in the trade.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="ics">5. Adding Weeks to Your Phone or Computer Calendar</h2>
+<!-- ============================================================ -->
+
+<p>
+  You can download a calendar file that adds your condo weeks to
+  <strong>Google Calendar</strong>, <strong>iPhone Calendar</strong>,
+  <strong>Outlook</strong>, or any other calendar app.
+</p>
+
+<div class="step">
+  <span class="step-number">1</span>
+  Click <strong>"Download .ics"</strong> in the menu bar.
+</div>
+
+<div class="step">
+  <span class="step-number">2</span>
+  Select <strong>your name</strong> from the owner list.
+</div>
+
+<div class="step">
+  <span class="step-number">3</span>
+  Select the <strong>year</strong>.
+</div>
+
+<div class="step">
+  <span class="step-number">4</span>
+  Click <strong>"Download .ics File."</strong>
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/ICS.png') }}" alt="The Download Calendar page">
+
+<p><strong>What happens next depends on your device:</strong></p>
+<ul>
+  <li><strong>On an iPhone or iPad:</strong> Tap the downloaded file. It will
+      ask if you want to add the events to your calendar. Tap <strong>"Add All."</strong></li>
+  <li><strong>On Android:</strong> Tap the downloaded file. It will open in
+      Google Calendar and ask you to add the events.</li>
+  <li><strong>On a computer:</strong> Double-click the downloaded file. It will
+      open in your default calendar app (Outlook, Apple Calendar, etc.).</li>
+</ul>
+
+<div class="tip">
+  <strong>Tip:</strong> The downloaded file includes all of your weeks for the
+  selected year, including any trades. Each event shows who currently has
+  that week.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="email">6. Emailing All Owners</h2>
+<!-- ============================================================ -->
+
+<p>
+  Need to send a message to all owners? The <strong>Email</strong> page sets
+  everything up for you.
+</p>
+
+<div class="step">
+  <span class="step-number">1</span>
+  Click <strong>"Email"</strong> in the menu bar.
+</div>
+
+<div class="step">
+  <span class="step-number">2</span>
+  Click one of the buttons:
+  <ul>
+    <li><strong>"Gmail (web)"</strong> &mdash; opens a new Gmail message with everyone in BCC.</li>
+    <li><strong>"Outlook (web)"</strong> &mdash; opens a new Outlook message with everyone in BCC.</li>
+    <li><strong>"Default Mail App"</strong> &mdash; opens whatever email app is on your phone or computer.</li>
+    <li><strong>"Copy All Addresses"</strong> &mdash; copies all the email addresses so you can paste them yourself.</li>
+  </ul>
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/Email.png') }}" alt="The Compose Group Email page">
+
+<div class="tip">
+  <strong>Tip:</strong> BCC is checked by default, which means the recipients
+  won't see each other's email addresses. This is the recommended setting.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="directory">7. Viewing the Owner Directory</h2>
+<!-- ============================================================ -->
+
+<p>
+  The <strong>Directory</strong> page shows contact information for all
+  Snowbound LLC owners &mdash; names, email addresses, and phone numbers.
+</p>
+
+<div class="step">
+  <span class="step-number">1</span>
+  Click <strong>"Directory"</strong> in the menu bar.
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/Directory Redacted.png') }}" alt="The Owner Directory page">
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="activity">8. Viewing the Activity Log</h2>
+<!-- ============================================================ -->
+
+<p>
+  The <strong>Activity</strong> page shows a record of every trade, comment,
+  and change that has been made to the calendar. This is useful if you want to
+  see what's been happening or verify a trade went through.
+</p>
+
+<div class="step">
+  <span class="step-number">1</span>
+  Click <strong>"Activity"</strong> in the menu bar.
+</div>
+
+<div class="step">
+  <span class="step-number">2</span>
+  Use the <strong>Year</strong> dropdown to pick which year you want to see.
+  It defaults to the current year.
+</div>
+
+<img src="{{ url_for('static', filename='screenshots/Activity Redacted.png') }}" alt="The Activity Log page">
+
+<p>
+  Each row shows when the change was made, who made it, what type of change
+  it was, which owners and weeks were involved, and any comments.
+</p>
+
+<div class="tip">
+  <strong>Tip:</strong> You can click on the column headers to sort the results.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="nav">9. Finding Your Way Around (The Menu Bar)</h2>
+<!-- ============================================================ -->
+
+<p>
+  The menu bar is at the <strong>top of every page</strong>. Here's what each
+  link does:
+</p>
+
+<img src="{{ url_for('static', filename='screenshots/Menu.png') }}" alt="The menu bar">
+
+<table>
+  <tr>
+    <th>Menu Item</th>
+    <th>What it does</th>
+  </tr>
+  <tr>
+    <td><strong>Calendar</strong></td>
+    <td>Shows the full year calendar grid.</td>
+  </tr>
+  <tr>
+    <td><strong>Lookup</strong></td>
+    <td>Search for specific weeks by owner or year.</td>
+  </tr>
+  <tr>
+    <td><strong>Directory</strong></td>
+    <td>Contact info for all owners.</td>
+  </tr>
+  <tr>
+    <td><strong>Activity</strong></td>
+    <td>See a log of all trades and changes.</td>
+  </tr>
+  <tr>
+    <td><strong>Download .ics</strong></td>
+    <td>Download weeks to your phone or computer calendar.</td>
+  </tr>
+  <tr>
+    <td><strong>Trade/Comment</strong></td>
+    <td>Trade a week, give one away, or add a note.</td>
+  </tr>
+  <tr>
+    <td><strong>Email</strong></td>
+    <td>Send an email to all owners.</td>
+  </tr>
+  <tr>
+    <td><strong>Logout</strong></td>
+    <td>Signs you out. Shows your name so you know who you're logged in as.</td>
+  </tr>
+</table>
+
+<div class="tip">
+  <strong>Tip:</strong> "Trade/Comment" and "Email" only appear after you log in.
+  If you don't see them, you may need to log in first.
+</div>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<!-- ============================================================ -->
+<h2 id="troubleshooting">10. Troubleshooting</h2>
+<!-- ============================================================ -->
+
+<p><strong>"I never received the magic link email."</strong></p>
+<ul>
+  <li>Check your <strong>Spam</strong> or <strong>Junk</strong> folder.</li>
+  <li>Make sure you typed the email address that is on file with Snowbound LLC.
+      If you're not sure, ask Larry.</li>
+  <li>The email comes from <strong>69hawn@gmail.com</strong> with a subject line
+      of "Snowbound LLC Calendar &mdash; Login Link." If you still don't
+      see it after a minute or two, try again.</li>
+</ul>
+
+<p><strong>"The magic link says it's expired."</strong></p>
+<ul>
+  <li>Magic links are valid for <strong>15 minutes</strong>. Go back to the
+      login page and request a new one.</li>
+</ul>
+
+<p><strong>"I can't see Trade/Comment or Email in the menu."</strong></p>
+<ul>
+  <li>These only appear when you are <strong>logged in</strong>. Click "Login"
+      first.</li>
+</ul>
+
+<p><strong>"The calendar looks too small on my phone."</strong></p>
+<ul>
+  <li>Try turning your phone <strong>sideways</strong> (landscape mode). The
+      calendar is a wide table and is easier to read in landscape.</li>
+  <li>You can also <strong>pinch to zoom</strong> on any phone or tablet.</li>
+</ul>
+
+<p><strong>"I made a mistake on a trade. How do I undo it?"</strong></p>
+<ul>
+  <li>Submit another trade to reverse it, or contact Larry for help.</li>
+</ul>
+
+<p><strong>"Who do I contact if something isn't working?"</strong></p>
+<ul>
+  <li>Contact <strong>Larry Kamons</strong>. His information is in the Owner Directory.</li>
+</ul>
+
+<p><a href="#top" class="back-to-top">Back to top</a></p>
+
+<hr>
+<p style="font-size: 14px; color: #999; text-align: center;">
+  Snowbound LLC &mdash; 69 Hawn Lane, Frisco, CO
+</p>
+
+</body>
+</html>
