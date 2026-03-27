@@ -69,6 +69,7 @@ def verify(token):
     session.permanent = True
     session["owner_id"] = owner.id
     session["owner_name"] = owner.name
+    session["owner_email"] = link.email
     session["is_admin"] = owner_email.is_admin
 
     return redirect(url_for("calendar.current"))

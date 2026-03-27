@@ -97,7 +97,7 @@ def _process_form(owners):
         _update_trade(trade2, owner1, trade_comment, audit_trail)
 
         audit = Audit(
-            email=session.get("owner_name", "unknown"),
+            email=f"{session.get('owner_name', 'unknown')} ({session.get('owner_email', '')})",
             trade_type=trade_type,
             owner1=owner1.name,
             owner1_week=week1,
@@ -156,7 +156,7 @@ def _process_form(owners):
         trade1.comment = comment
 
         audit = Audit(
-            email=session.get("owner_name", "unknown"),
+            email=f"{session.get('owner_name', 'unknown')} ({session.get('owner_email', '')})",
             trade_type=trade_type,
             owner1=owner1.name,
             owner1_week=week1,
