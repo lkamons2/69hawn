@@ -124,6 +124,7 @@ def lookup():
     owners = Owner.query.filter_by(is_active=True).order_by(Owner.name).all()
     owner_ids = request.args.getlist("owner_id", type=int)
     year = request.args.get("year", type=int, default=date.today().year)
+    search_by = request.args.get("search_by", "owner")
 
     # 0 means "All Owners"
     select_all = 0 in owner_ids
@@ -132,7 +133,17 @@ def lookup():
     if owner_ids:
         q = TradeDetail.query.filter_by(year=year)
         if not select_all:
-            q = q.filter(TradeDetail.owner_id.in_(owner_ids))
+            if search_by == "holder":
+                # Weeks they currently hold: traded TO them, or their own untraded weeks
+                q = q.filter(db.or_(
+                    TradeDetail.current_holder_id.in_(owner_ids),
+                    db.and_(
+                        TradeDetail.owner_id.in_(owner_ids),
+                        TradeDetail.current_holder_id.is_(None),
+                    ),
+                ))
+            else:
+                q = q.filter(TradeDetail.owner_id.in_(owner_ids))
         for t in q.order_by(TradeDetail.week_start).all():
             weeks.append({
                 "week_start": t.week_start,
@@ -149,6 +160,7 @@ def lookup():
         weeks=weeks,
         selected_owner_ids=owner_ids,
         selected_year=year,
+        selected_search_by=search_by,
         year_range=range(2022, 2101),
     )
 

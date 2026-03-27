@@ -7,6 +7,13 @@
 <form method="get" action="{{ url_for('calendar.lookup') }}" class="lookup-form">
   <div class="form-row">
     <div class="form-group">
+      <label for="search_by">Search By</label>
+      <select id="search_by" name="search_by">
+        <option value="owner" {% if selected_search_by == 'owner' %}selected{% endif %}>Original Owner</option>
+        <option value="holder" {% if selected_search_by == 'holder' %}selected{% endif %}>Current Holder</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label for="owner_id">Owner(s)</label>
       <select id="owner_id" name="owner_id" multiple size="6">
         <option value="0" {% if 0 in selected_owner_ids %}selected{% endif %}>All Owners</option>
@@ -31,6 +38,14 @@
     </div>
   </div>
 </form>
+
+<div style="margin-top:10px;background:#f0f4f8;padding:12px;border-radius:4px;font-size:0.85rem;color:#555;">
+  <strong>Search Options</strong>
+  <ul style="margin:4px 0 0 16px;padding:0;">
+    <li><strong>Original Owner</strong> — Shows all weeks originally assigned to the selected owner(s), regardless of trades.</li>
+    <li><strong>Current Holder</strong> — Shows only weeks the selected owner(s) currently hold, including weeks traded to them from others.</li>
+  </ul>
+</div>
 
 <script>
 (function() {
